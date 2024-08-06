@@ -21,7 +21,7 @@ public class CaptureZone : MonoBehaviour
     {
         Runner validRunner = other.GetComponent<Runner>();
         if (validRunner && validRunner.hasFlag.Value) {
-            Debug.Log("Runners win");
+            GameManager.Instance.CompleteGame(Team.RUNNER);
         }
     }
 }

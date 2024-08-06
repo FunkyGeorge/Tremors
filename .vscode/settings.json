@@ -51,5 +51,6 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Sharks and Minnows.sln"
+    "dotnet.defaultSolution": "Sharks and Minnows.sln",
+    "dotnet.preferCSharpExtension": true
 }

@@ -23,7 +23,8 @@ public class LobbyManager : MonoBehaviour {
     public const string KEY_PLAYER_COLOR = "Color";
     public const string KEY_TREMOR_IDS = "TremorIds";
     public const string KEY_GAME_MODE = "GameMode";
-    public const string GAME_CODE = "GameCode";
+    public const string KEY_GAME_CODE = "GameCode";
+    public const string KEY_WINNING_TEAM = "WinningTeam";
 
 
 
@@ -137,10 +138,6 @@ public class LobbyManager : MonoBehaviour {
 
                 OnJoinedLobbyUpdate?.Invoke(this, new LobbyEventArgs { lobby = joinedLobby });
 
-                if (HasRelayServerStarted()) {
-                    Debug.Log("Relay has started");
-                }
-
                 if (!IsPlayerInLobby()) {
                     // Player was kicked out of this lobby
                     Debug.Log("Kicked from Lobby!");
@@ -167,7 +164,7 @@ public class LobbyManager : MonoBehaviour {
     }
 
     public bool HasRelayServerStarted() {
-        string joinKey = joinedLobby.Data[GAME_CODE].Value;
+        string joinKey = joinedLobby.Data[KEY_GAME_CODE].Value;
         return joinKey != "";
     }
 
@@ -218,8 +215,9 @@ public class LobbyManager : MonoBehaviour {
             IsPrivate = isPrivate,
             Data = new Dictionary<string, DataObject> {
                 { KEY_GAME_MODE, new DataObject(DataObject.VisibilityOptions.Public, gameMode.ToString()) },
-                { GAME_CODE, new DataObject(DataObject.VisibilityOptions.Member, "") },
-                { KEY_TREMOR_IDS, new DataObject(DataObject.VisibilityOptions.Member, "") }
+                { KEY_GAME_CODE, new DataObject(DataObject.VisibilityOptions.Member, "") },
+                { KEY_TREMOR_IDS, new DataObject(DataObject.VisibilityOptions.Member, "") },
+                { KEY_WINNING_TEAM, new DataObject(DataObject.VisibilityOptions.Member, "") }
             }
         };
 

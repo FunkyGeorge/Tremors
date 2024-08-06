@@ -10,6 +10,7 @@ using Unity.Services.Lobbies.Models;
 using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using Unity.Netcode.Transports.UTP;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -18,7 +19,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Config")]
     
-
+    private string gameCodeString = "";
 
     private static GameManager _instance;
     public static GameManager Instance
@@ -69,28 +70,35 @@ public class GameManager : MonoBehaviour
 
                     Lobby lobby = await Lobbies.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions {
                         Data = new Dictionary<string, DataObject> {
-                            { LobbyManager.GAME_CODE, new DataObject(DataObject.VisibilityOptions.Member, joinCode) }
+                            { LobbyManager.KEY_GAME_CODE, new DataObject(DataObject.VisibilityOptions.Member, joinCode) }
                         }
                     });
             } catch (RelayServiceException e) {
                 Debug.Log(e);
             }
         }
-
     }
 
     private void UpdateLobby_Event(object sender, LobbyManager.LobbyEventArgs e) {
-        JoinRelayAsClient();
+        try {
+            Lobby joinedLobby = LobbyManager.Instance.GetJoinedLobby();
+            string relayCode = joinedLobby.Data[LobbyManager.KEY_GAME_CODE].Value;
+            string winningTeamString = joinedLobby.Data[LobbyManager.KEY_WINNING_TEAM].Value;
+            if (relayCode != gameCodeString) {
+                JoinRelayAsClient(relayCode);
+            }
+
+            if (winningTeamString != "") {
+                ProceedToPostGame();
+            }
+        } catch (LobbyServiceException err) {
+            Debug.Log(err);
+        }
     }
 
-    async void JoinRelayAsClient() {
+    async void JoinRelayAsClient(string relayCode) {
         if (!LobbyManager.Instance.IsLobbyHost()) {
             try {
-                Lobby joinedLobby = LobbyManager.Instance.GetJoinedLobby();
-                string relayCode = joinedLobby.Data[LobbyManager.GAME_CODE].Value;
-
-                if (relayCode == "") { return; }
-
                 JoinAllocation joinAlloc = await RelayService.Instance.JoinAllocationAsync(relayCode);
 
                 NetworkManager.Singleton.GetComponent<UnityTransport>().SetClientRelayData(
@@ -103,15 +111,30 @@ public class GameManager : MonoBehaviour
                     );
 
                 NetworkManager.Singleton.StartClient();
+                gameCodeString = relayCode;
             } catch (RelayServiceException e) {
                 Debug.Log(e);
             }
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    void ProceedToPostGame()
     {
-        
+        LobbyManager.Instance.OnJoinedLobbyUpdate -= UpdateLobby_Event;
+        SceneManager.LoadScene("PostGame");
+    }
+
+    public async void CompleteGame(Team winners) {
+        try {
+            Lobby joinedLobby = LobbyManager.Instance.GetJoinedLobby();
+            await Lobbies.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions {
+                Data = new Dictionary<string, DataObject> {
+                    { LobbyManager.KEY_WINNING_TEAM, new DataObject(DataObject.VisibilityOptions.Member, winners.ToString()) }
+                }
+            });
+
+        } catch (LobbyServiceException e) {
+            Debug.Log(e);
+        }
     }
 }
