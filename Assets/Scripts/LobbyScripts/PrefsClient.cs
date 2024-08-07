@@ -16,6 +16,6 @@ public class PrefsClient
     }
 
     public static string GetPlayerLobby() {
-        return PlayerPrefs.GetString(CURRENT_LOBBY_KEY);
+        return PlayerPrefs.GetString(CURRENT_LOBBY_KEY, "");
     }
 }

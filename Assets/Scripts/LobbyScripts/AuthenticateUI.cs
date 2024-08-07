@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Services.Authentication;
+using Unity.Services.Lobbies.Models;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,9 +13,20 @@ public class AuthenticateUI : MonoBehaviour {
 
     private void Awake() {
         authenticateButton.onClick.AddListener(() => {
-            LobbyManager.Instance.Authenticate(EditPlayerName.Instance.GetPlayerName());
-            Hide();
+            try {
+                LobbyManager.Instance.Authenticate(EditPlayerName.Instance.GetPlayerName());
+                Hide();
+            } catch (AuthenticationException e) {
+                Debug.Log(e);
+            }
         });
+    }
+
+    void Start() {
+        Lobby joinedLobby = LobbyManager.Instance.GetJoinedLobby();
+        if (joinedLobby != null) {
+            Hide();
+        }
     }
 
     private void Hide() {

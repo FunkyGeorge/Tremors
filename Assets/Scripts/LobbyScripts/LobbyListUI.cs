@@ -32,6 +32,11 @@ public class LobbyListUI : MonoBehaviour {
         LobbyManager.Instance.OnJoinedLobby += LobbyManager_OnJoinedLobby;
         LobbyManager.Instance.OnLeftLobby += LobbyManager_OnLeftLobby;
         LobbyManager.Instance.OnKickedFromLobby += LobbyManager_OnKickedFromLobby;
+
+        Lobby joinedLobby = LobbyManager.Instance.GetJoinedLobby();
+        if (joinedLobby != null) {
+            Hide();
+        }
     }
 
     private void LobbyManager_OnKickedFromLobby(object sender, LobbyManager.LobbyEventArgs e) {
