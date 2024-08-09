@@ -7,6 +7,7 @@ using Unity.Services.Authentication;
 using Unity.Services.Lobbies.Models;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
 
 public class Runner : NetworkBehaviour
@@ -33,16 +34,6 @@ public class Runner : NetworkBehaviour
     }
 
     private MoveState currentState = MoveState.Normal;
-
-    public override void OnNetworkSpawn()
-    {
-        // SyncColorClientRPC();
-
-        // if (!IsOwner) {
-        //     enabled = false;
-        //     return;
-        // }
-    }
 
     // Start is called before the first frame update
     void Start()
@@ -106,19 +97,22 @@ public class Runner : NetworkBehaviour
         }
     }
 
-    public void CollectFlag(Sprite flagSprite) {
+    public void CollectFlag() {
+        if (IsOwner) {
+            CollectFlagServerRPC();
+        }
+    }
+
+    [ServerRpc]
+    private void CollectFlagServerRPC() {
         GameObject flagSocket = transform.Find("Flag Socket").gameObject;
         SpriteRenderer socketSprite = flagSocket.GetComponent<SpriteRenderer>();
-        socketSprite.sprite = flagSprite;
+        socketSprite.sprite = flagPrefab.GetComponent<SpriteRenderer>().sprite;
         hasFlag.Value = true;
     }
 
     public void GetEliminated() {
-        hasFlag.Value = false;
-
-        // Drop a flag
-        Instantiate(flagPrefab, transform);
-        Destroy(gameObject);
+        EliminateServerRPC();
     }
 
     private void UpdateLobby_Event(object sender, LobbyManager.LobbyEventArgs e) {
@@ -136,6 +130,17 @@ public class Runner : NetworkBehaviour
                         Enum.Parse<LobbyManager.PlayerColor>(player.Data[LobbyManager.KEY_PLAYER_COLOR].Value));
                 }
             });
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void EliminateServerRPC() {
+        if (hasFlag.Value) {
+            // Drop a flag
+            Instantiate(flagPrefab, transform);
+            hasFlag.Value = false;
+        }
+
+        Destroy(gameObject);
     }
 
     // Player input

@@ -231,6 +231,27 @@ public class LobbyManager : MonoBehaviour {
         Debug.Log("Created Lobby " + lobby.Name);
     }
 
+    public async void UpdateLobby(UpdateLobbyOptions lobbyOptions) {
+        try {
+            await Lobbies.Instance.UpdateLobbyAsync(joinedLobby.Id, lobbyOptions);
+
+        } catch (LobbyServiceException e) {
+            Debug.Log(e);
+        }
+    }
+
+    public async void ClearLobby() {
+        await Lobbies.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions {
+            Data = new Dictionary<string, DataObject> {
+                { KEY_GAME_CODE, new DataObject(DataObject.VisibilityOptions.Member, "") },
+                { KEY_TREMOR_IDS, new DataObject(DataObject.VisibilityOptions.Member, "") },
+                { KEY_WINNING_TEAM, new DataObject(DataObject.VisibilityOptions.Member, "") }
+            }
+        });
+
+        AssignPlayerConnectionId(100);
+    }
+
     public async void RefreshLobbyList() {
         try {
             QueryLobbiesOptions options = new QueryLobbiesOptions();

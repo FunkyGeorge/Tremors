@@ -20,8 +20,7 @@ public class Flag : MonoBehaviour
     void OnTriggerEnter2D(Collider2D other) {
         Runner validRunner = other.GetComponent<Runner>();
         if (validRunner) {
-            Sprite flagSprite = GetComponent<SpriteRenderer>().sprite;
-            validRunner.CollectFlag(flagSprite);
+            validRunner.CollectFlag();
             Destroy(gameObject);
         }
     }

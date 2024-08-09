@@ -1,10 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using Unity.Netcode;
 using UnityEngine;
-using Unity.Services.Authentication;
-using Unity.Services.Core;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
 using Unity.Services.Relay;
@@ -50,7 +47,6 @@ public class GameManager : MonoBehaviour
 
     async void StartRelayHost() {
         Lobby joinedLobby = LobbyManager.Instance.GetJoinedLobby();
-        Debug.Log("Tremors: " + joinedLobby.Data[LobbyManager.KEY_TREMOR_IDS].Value);
 
         if (LobbyManager.Instance.IsLobbyHost()) {
             try {
@@ -84,6 +80,7 @@ public class GameManager : MonoBehaviour
             Lobby joinedLobby = LobbyManager.Instance.GetJoinedLobby();
             string relayCode = joinedLobby.Data[LobbyManager.KEY_GAME_CODE].Value;
             string winningTeamString = joinedLobby.Data[LobbyManager.KEY_WINNING_TEAM].Value;
+
             if (relayCode != gameCodeString) {
                 JoinRelayAsClient(relayCode);
             }
@@ -109,7 +106,8 @@ public class GameManager : MonoBehaviour
                         joinAlloc.ConnectionData,
                         joinAlloc.HostConnectionData
                     );
-
+                
+                Debug.Log("Joining with relay code: " + relayCode);
                 NetworkManager.Singleton.StartClient();
                 gameCodeString = relayCode;
             } catch (RelayServiceException e) {
@@ -121,20 +119,19 @@ public class GameManager : MonoBehaviour
     void ProceedToPostGame()
     {
         LobbyManager.Instance.OnJoinedLobbyUpdate -= UpdateLobby_Event;
-        SceneManager.LoadScene("PostGame");
+        if (NetworkManager.Singleton.IsServer) {
+            NetworkManager.Singleton.SceneManager.LoadScene("PostGame", LoadSceneMode.Single);
+        }
+        // SceneManager.LoadScene("PostGame");
     }
 
-    public async void CompleteGame(Team winners) {
-        try {
-            Lobby joinedLobby = LobbyManager.Instance.GetJoinedLobby();
-            await Lobbies.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions {
+    public void CompleteGame(Team winners) {
+        if (LobbyManager.Instance.IsLobbyHost()) {
+            LobbyManager.Instance.UpdateLobby(new UpdateLobbyOptions {
                 Data = new Dictionary<string, DataObject> {
                     { LobbyManager.KEY_WINNING_TEAM, new DataObject(DataObject.VisibilityOptions.Member, winners.ToString()) }
                 }
             });
-
-        } catch (LobbyServiceException e) {
-            Debug.Log(e);
         }
     }
 }

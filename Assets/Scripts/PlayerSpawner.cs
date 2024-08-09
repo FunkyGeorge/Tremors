@@ -17,33 +17,39 @@ public class PlayerSpawner : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        NetworkManager.Singleton.OnClientConnectedCallback += (ulong clientId) => {
-            if (NetworkManager.Singleton.LocalClientId == clientId) {
-                Lobby currentLobby = LobbyManager.Instance.GetJoinedLobby();
-                if (currentLobby != null) {
-                    LobbyManager.Instance.AssignPlayerConnectionId(clientId);
-
-                    string[] tremorIds = currentLobby.Data[LobbyManager.KEY_TREMOR_IDS].Value.Split("_");
-
-                    if (tremorIds.Contains(AuthenticationService.Instance.PlayerId)) {
-                        SpawnPlayerServerRPC(clientId, Team.SHARK);
-                    } else {
-                        SpawnPlayerServerRPC(clientId, Team.RUNNER);
-                    }
-                } else {
-                    // If there is no lobby, This should happen only for debugging when starting
-                    // in the desert scene
-                    Team teamAssignment = clientId % 2 != 0 ? Team.RUNNER : Team.SHARK;
-                    SpawnPlayerServerRPC(clientId, teamAssignment);
-                }
-            }
-        };
+        NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    public override void OnDestroy() {
+        NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+    }
+
+    void OnClientConnected(ulong clientId) {
+        if (NetworkManager.Singleton.LocalClientId == clientId) {
+            Lobby currentLobby = LobbyManager.Instance.GetJoinedLobby();
+            if (currentLobby != null) {
+                LobbyManager.Instance.AssignPlayerConnectionId(clientId);
+
+                string[] tremorIds = currentLobby.Data[LobbyManager.KEY_TREMOR_IDS].Value.Split("_");
+
+                if (tremorIds.Contains(AuthenticationService.Instance.PlayerId)) {
+                    SpawnPlayerServerRPC(clientId, Team.SHARK);
+                } else {
+                    SpawnPlayerServerRPC(clientId, Team.RUNNER);
+                }
+            } else {
+                // If there is no lobby, This should happen only for debugging when starting
+                // in the desert scene
+                Team teamAssignment = clientId % 2 != 0 ? Team.RUNNER : Team.SHARK;
+                SpawnPlayerServerRPC(clientId, teamAssignment);
+            }
+        }
     }
 
     public void SpawnPlayer(ulong clientId, Team team) {

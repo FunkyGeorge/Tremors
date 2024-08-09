@@ -58,6 +58,7 @@ MonoBehaviour:
   mSpeed: 7
   dodgeSpeed: 14
   dodgeTime: 0.15
+  dodgeCooldown: 5
 --- !u!212 &5443795969566995531
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -251,7 +252,7 @@ MonoBehaviour:
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
   SceneMigrationSynchronization: 1
-  DontDestroyWithOwner: 0
+  DontDestroyWithOwner: 1
   AutoObjectParentSync: 1
 --- !u!114 &1087653236924541917
 MonoBehaviour:

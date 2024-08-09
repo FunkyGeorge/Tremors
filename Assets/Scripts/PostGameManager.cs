@@ -6,6 +6,7 @@ using Unity.Services.Lobbies.Models;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
+using Unity.Netcode;
 
 public class PostGameManager : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class PostGameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        NetworkManager.Singleton.Shutdown();
         Invoke("ShowWinningText", 1f);
     }
 
@@ -29,7 +31,7 @@ public class PostGameManager : MonoBehaviour
 
             Team winners = Enum.Parse<Team>(joinedLobby.Data[LobbyManager.KEY_WINNING_TEAM].Value);
 
-            winningText.text = String.Format("{0} win!", winners == Team.RUNNER ? "Runners" : "Tremors");
+            winningText.text = string.Format("{0} win!", winners == Team.RUNNER ? "Runners" : "Tremors");
         } catch (LobbyServiceException e) {
             Debug.Log(e);
         }
@@ -37,20 +39,17 @@ public class PostGameManager : MonoBehaviour
         Invoke("ReturnToLobby", 5f);
     }
 
-    async void ReturnToLobby() {
-        try {
-            Lobby joinedLobby = LobbyManager.Instance.GetJoinedLobby();
-            await Lobbies.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions {
-                Data = new Dictionary<string, DataObject> {
-                    { LobbyManager.KEY_GAME_CODE, new DataObject(DataObject.VisibilityOptions.Member, "") },
-                    { LobbyManager.KEY_TREMOR_IDS, new DataObject(DataObject.VisibilityOptions.Member, "") },
-                    { LobbyManager.KEY_WINNING_TEAM, new DataObject(DataObject.VisibilityOptions.Member, "") }
-                }
-            });
+    void ReturnToLobby() {
+        if (NetworkManager.Singleton != null) {
+            Destroy(NetworkManager.Singleton.gameObject);
+        }
 
-            LobbyManager.Instance.AssignPlayerConnectionId(100);
-        } catch (LobbyServiceException e) {
-            Debug.Log(e);
+        if (LobbyManager.Instance.IsLobbyHost()) {
+            try {
+                LobbyManager.Instance.ClearLobby();
+            } catch (LobbyServiceException e) {
+                Debug.Log(e);
+            }
         }
 
         SceneManager.LoadScene("Lobby");
