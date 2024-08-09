@@ -17,11 +17,13 @@ public class EditPlayerName : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI playerNameText;
 
 
-    private string playerName = "DefaultUsername";
+    private string playerName = "Username";
 
 
     private void Awake() {
         Instance = this;
+
+        playerName = PrefsClient.GetUsername(playerName);
 
         GetComponent<Button>().onClick.AddListener(() => {
             UI_InputWindow.Show_Static("Player Name", playerName, "abcdefghijklmnopqrstuvxywzABCDEFGHIJKLMNOPQRSTUVXYWZ .,-", 20,
@@ -30,6 +32,7 @@ public class EditPlayerName : MonoBehaviour {
             },
             (string newName) => {
                 playerName = newName;
+                PrefsClient.SetUsername(playerName);
 
                 playerNameText.text = playerName;
 

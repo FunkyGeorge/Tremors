@@ -49,18 +49,6 @@ public class LobbyManager : MonoBehaviour {
         Conquest
     }
 
-    public enum PlayerColor {
-        Blue,
-        Green,
-        LightGreen,
-        Orange,
-        Pink,
-        Purple,
-        Red,
-        Teal,
-        White,
-        Yellow,
-    }
 
     private float heartbeatTimer;
     private float lobbyPollTimer;
@@ -77,6 +65,10 @@ public class LobbyManager : MonoBehaviour {
         else Destroy(gameObject);
 
         DontDestroyOnLoad(gameObject);
+    }
+
+    void Start() {
+        _playerColor = PrefsClient.GetPlayerColor();
     }
 
     private void Update() {

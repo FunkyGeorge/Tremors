@@ -37,34 +37,44 @@ public class LobbyUI : MonoBehaviour {
         playerSingleTemplate.gameObject.SetActive(false);
 
         changeToBlueButton.onClick.AddListener(() => {
-            LobbyManager.Instance.UpdatePlayerColor(LobbyManager.PlayerColor.Blue);
+            LobbyManager.Instance.UpdatePlayerColor(PlayerColor.Blue);
+            PrefsClient.SetPlayerColor(PlayerColor.Blue);
         });
         changeToGreenButton.onClick.AddListener(() => {
-            LobbyManager.Instance.UpdatePlayerColor(LobbyManager.PlayerColor.Green);
+            LobbyManager.Instance.UpdatePlayerColor(PlayerColor.Green);
+            PrefsClient.SetPlayerColor(PlayerColor.Green);
         });
         changeToLightGreenButton.onClick.AddListener(() => {
-            LobbyManager.Instance.UpdatePlayerColor(LobbyManager.PlayerColor.LightGreen);
+            LobbyManager.Instance.UpdatePlayerColor(PlayerColor.LightGreen);
+            PrefsClient.SetPlayerColor(PlayerColor.LightGreen);
         });
         changeToOrangeButton.onClick.AddListener(() => {
-            LobbyManager.Instance.UpdatePlayerColor(LobbyManager.PlayerColor.Orange);
+            LobbyManager.Instance.UpdatePlayerColor(PlayerColor.Orange);
+            PrefsClient.SetPlayerColor(PlayerColor.Orange);
         });
         changeToPinkButton.onClick.AddListener(() => {
-            LobbyManager.Instance.UpdatePlayerColor(LobbyManager.PlayerColor.Pink);
+            LobbyManager.Instance.UpdatePlayerColor(PlayerColor.Pink);
+            PrefsClient.SetPlayerColor(PlayerColor.Pink);
         });
         changeToPurpleButton.onClick.AddListener(() => {
-            LobbyManager.Instance.UpdatePlayerColor(LobbyManager.PlayerColor.Purple);
+            LobbyManager.Instance.UpdatePlayerColor(PlayerColor.Purple);
+            PrefsClient.SetPlayerColor(PlayerColor.Purple);
         });
         changeToRedButton.onClick.AddListener(() => {
-            LobbyManager.Instance.UpdatePlayerColor(LobbyManager.PlayerColor.Red);
+            LobbyManager.Instance.UpdatePlayerColor(PlayerColor.Red);
+            PrefsClient.SetPlayerColor(PlayerColor.Red);
         });
         changeToTealButton.onClick.AddListener(() => {
-            LobbyManager.Instance.UpdatePlayerColor(LobbyManager.PlayerColor.Teal);
+            LobbyManager.Instance.UpdatePlayerColor(PlayerColor.Teal);
+            PrefsClient.SetPlayerColor(PlayerColor.Teal);
         });
         changeToWhiteButton.onClick.AddListener(() => {
-            LobbyManager.Instance.UpdatePlayerColor(LobbyManager.PlayerColor.White);
+            LobbyManager.Instance.UpdatePlayerColor(PlayerColor.White);
+            PrefsClient.SetPlayerColor(PlayerColor.White);
         });
         changeToYellowButton.onClick.AddListener(() => {
-            LobbyManager.Instance.UpdatePlayerColor(LobbyManager.PlayerColor.Yellow);
+            LobbyManager.Instance.UpdatePlayerColor(PlayerColor.Yellow);
+            PrefsClient.SetPlayerColor(PlayerColor.Yellow);
         });
 
 

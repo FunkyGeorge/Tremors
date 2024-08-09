@@ -127,7 +127,7 @@ public class Runner : NetworkBehaviour
         joinedLobby.Players.ForEach((player) => {
                 if (ulong.Parse(player.Data[LobbyManager.KEY_CLIENT_ID].Value) == OwnerClientId) {
                     sr.color = LobbyAssets.GetCharacterColor(
-                        Enum.Parse<LobbyManager.PlayerColor>(player.Data[LobbyManager.KEY_PLAYER_COLOR].Value));
+                        Enum.Parse<PlayerColor>(player.Data[LobbyManager.KEY_PLAYER_COLOR].Value));
                 }
             });
     }

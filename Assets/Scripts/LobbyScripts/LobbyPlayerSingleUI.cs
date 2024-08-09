@@ -27,8 +27,8 @@ public class LobbyPlayerSingleUI : MonoBehaviour {
     public void UpdatePlayer(Player player) {
         this.player = player;
         playerNameText.text = player.Data[LobbyManager.KEY_PLAYER_NAME].Value;
-        LobbyManager.PlayerColor playerColor = 
-            System.Enum.Parse<LobbyManager.PlayerColor>(player.Data[LobbyManager.KEY_PLAYER_COLOR].Value);
+        PlayerColor playerColor = 
+            System.Enum.Parse<PlayerColor>(player.Data[LobbyManager.KEY_PLAYER_COLOR].Value);
         characterImage.sprite = LobbyAssets.Instance.GetSprite();
         characterImage.color = LobbyAssets.GetCharacterColor(playerColor);
     }

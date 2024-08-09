@@ -122,7 +122,6 @@ public class GameManager : MonoBehaviour
         if (NetworkManager.Singleton.IsServer) {
             NetworkManager.Singleton.SceneManager.LoadScene("PostGame", LoadSceneMode.Single);
         }
-        // SceneManager.LoadScene("PostGame");
     }
 
     public void CompleteGame(Team winners) {
