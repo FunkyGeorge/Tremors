@@ -26,8 +26,8 @@ public class PrefsClient
         PlayerPrefs.SetString(USERNAME_KEY, newUsername);
     }
 
-    public static string GetUsername(string defaultUsername) {
-        return PlayerPrefs.GetString(USERNAME_KEY, defaultUsername);
+    public static string GetUsername() {
+        return PlayerPrefs.GetString(USERNAME_KEY, "Username");
     }
 
     public static void SetPlayerColor(PlayerColor newColor) {
