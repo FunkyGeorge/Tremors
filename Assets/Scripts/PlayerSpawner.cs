@@ -27,7 +27,9 @@ public class PlayerSpawner : NetworkBehaviour
     }
 
     public override void OnDestroy() {
-        NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+        if (NetworkManager.Singleton != null) {
+            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+        }
     }
 
     void OnClientConnected(ulong clientId) {

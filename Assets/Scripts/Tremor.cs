@@ -28,10 +28,6 @@ public class Tremor : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        if (!IsOwner) {
-            enabled = false;
-            return;
-        }
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
         Player localPlayer = LobbyManager.Instance.GetPlayer();
         Debug.Log("Logging Color: " + localPlayer.Data[LobbyManager.KEY_PLAYER_COLOR].Value);
@@ -53,18 +49,26 @@ public class Tremor : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        // What kind of movement?
-        switch (currentState) {
-            case MoveState.Coast:
-                Coast(intentDirection);
-                break;
-            case MoveState.Normal:
-            default:
-                Move(intentDirection, rotationSpeed);
-                break;
+        if (IsOwner) {
+            // What kind of movement?
+            switch (currentState) {
+                case MoveState.Coast:
+                    Coast(intentDirection);
+                    break;
+                case MoveState.Normal:
+                default:
+                    Move(intentDirection, rotationSpeed);
+                    break;
+            }
         }
     }
+
+    void OnCollisionEnter2D(Collision2D collision) {
+        if (collision.gameObject.tag == "Player") {
+            collision.gameObject.GetComponent<Runner>().Eliminate();
+        }
+    }
+
 
 
     private void Move(Vector2 _move, float _rotationSpeed) {

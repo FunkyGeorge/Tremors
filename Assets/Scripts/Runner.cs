@@ -74,14 +74,8 @@ public class Runner : NetworkBehaviour
     public override void OnDestroy()
     {
         LobbyManager.Instance.OnJoinedLobbyUpdate -= UpdateLobby_Event;
+        GameManager.Instance.CheckActiveRunners();
     }
-
-    void OnCollisionEnter2D(Collision2D collision) {
-        if (collision.gameObject.tag == "Tremor") {
-            GetEliminated();
-        }
-    }
-
     
     private void Move(Vector2 _move){
         GetComponent<Rigidbody2D>().velocity = _move * mSpeed;
@@ -111,7 +105,7 @@ public class Runner : NetworkBehaviour
         hasFlag.Value = true;
     }
 
-    public void GetEliminated() {
+    public void Eliminate() {
         EliminateServerRPC();
     }
 

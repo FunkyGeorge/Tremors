@@ -116,6 +116,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void CheckActiveRunners() {
+        int remaining = GameObject.FindGameObjectsWithTag("Player").Length;
+        if (remaining == 0) {
+            CompleteGame(Team.SHARK);
+        }
+    }
+
     void ProceedToPostGame()
     {
         LobbyManager.Instance.OnJoinedLobbyUpdate -= UpdateLobby_Event;
