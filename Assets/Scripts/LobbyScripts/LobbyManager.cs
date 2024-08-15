@@ -5,6 +5,7 @@ using Unity.Services.Core;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LobbyManager : MonoBehaviour {
 
@@ -59,6 +60,9 @@ public class LobbyManager : MonoBehaviour {
 
     public ulong localClientId = 100;
 
+    [Header("Development")]
+    [SerializeField] private bool debugStart = false;
+
 
     private void Awake() {
         if (_instance == null) _instance = this;
@@ -77,7 +81,7 @@ public class LobbyManager : MonoBehaviour {
         HandleLobbyPolling();
     }
 
-    public async void Authenticate(string playerName) {
+    public async System.Threading.Tasks.Task Authenticate(string playerName) {
         this.playerName = playerName;
         InitializationOptions initializationOptions = new InitializationOptions();
         initializationOptions.SetProfile(playerName);
@@ -199,7 +203,7 @@ public class LobbyManager : MonoBehaviour {
         }
     }
 
-    public async void CreateLobby(string lobbyName, int maxPlayers, bool isPrivate, GameMode gameMode) {
+    public async System.Threading.Tasks.Task CreateLobby(string lobbyName, int maxPlayers, bool isPrivate, GameMode gameMode) {
         Player player = GetPlayer();
 
         CreateLobbyOptions options = new CreateLobbyOptions {
@@ -461,8 +465,9 @@ public class LobbyManager : MonoBehaviour {
                 });
                 
                 joinedLobby = lobby;
+            } else if (debugStart) {
+                SceneManager.LoadScene("Desert");
             }
-
 
         } catch (LobbyServiceException e) {
             Debug.Log(e);

@@ -29,8 +29,8 @@ public class LobbyCreateUI : MonoBehaviour {
     private void Awake() {
         Instance = this;
 
-        createButton.onClick.AddListener(() => {
-            LobbyManager.Instance.CreateLobby(
+        createButton.onClick.AddListener(async () => {
+            await LobbyManager.Instance.CreateLobby(
                 lobbyName,
                 maxPlayers,
                 isPrivate,

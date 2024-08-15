@@ -33,12 +33,17 @@ public class GameManager : MonoBehaviour
     }
 
     // Start is called before the first frame update
-    void Start()
+    async void Start()
     {
         LobbyManager.Instance.OnJoinedLobbyUpdate += UpdateLobby_Event;
 
-        // Players should be signed in at this point
+        Lobby joinedLobby = LobbyManager.Instance.GetJoinedLobby();
+        if (joinedLobby == null) {
+            await LobbyManager.Instance.Authenticate("Debug");
+            await LobbyManager.Instance.CreateLobby("Debug Lobby", 1, true, LobbyManager.GameMode.CaptureTheFlag);
+        }
         StartRelayHost();
+
     }
 
     private void OnDestroy() {

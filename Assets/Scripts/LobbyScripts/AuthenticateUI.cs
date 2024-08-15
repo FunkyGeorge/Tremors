@@ -12,9 +12,9 @@ public class AuthenticateUI : MonoBehaviour {
 
 
     private void Awake() {
-        authenticateButton.onClick.AddListener(() => {
+        authenticateButton.onClick.AddListener(async () => {
             try {
-                LobbyManager.Instance.Authenticate(EditPlayerName.Instance.GetPlayerName());
+                await LobbyManager.Instance.Authenticate(EditPlayerName.Instance.GetPlayerName());
                 Hide();
             } catch (AuthenticationException e) {
                 Debug.Log(e);
