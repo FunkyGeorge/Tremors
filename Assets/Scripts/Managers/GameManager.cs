@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
@@ -11,6 +12,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    public event EventHandler<int> OnSurvivorsUpdated;
     [Header("Debug")]
     [SerializeField] private Team debugStartingTeam;
 
@@ -123,6 +125,9 @@ public class GameManager : MonoBehaviour
 
     public void CheckActiveRunners() {
         int remaining = GameObject.FindGameObjectsWithTag("Player").Length;
+        
+
+        OnSurvivorsUpdated?.Invoke(this, remaining);
         if (remaining == 0) {
             CompleteGame(Team.SHARK);
         }
