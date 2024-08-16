@@ -13,6 +13,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public event EventHandler<int> OnSurvivorsUpdated;
+    private List<Transform> tremors = new List<Transform>();
     [Header("Debug")]
     [SerializeField] private Team debugStartingTeam;
 
@@ -131,6 +132,27 @@ public class GameManager : MonoBehaviour
         if (remaining == 0) {
             CompleteGame(Team.SHARK);
         }
+    }
+
+    public List<Vector2> GetTremorPositions(Vector2 playerPosition) {
+        List<Vector2> tremorVectorsOnRadar = new List<Vector2>();
+        float minRadarDistance = 5f;
+        float maxRadarDistance = 14f;
+
+        if (tremors.Count == 0) {
+            foreach(GameObject tremorGO in GameObject.FindGameObjectsWithTag("Tremor")) {
+                tremors.Add(tremorGO.transform);
+            };
+        }
+
+        for (int i = 0; i < tremors.Count; i++) {
+            float tremorDistance = Vector2.Distance(playerPosition, tremors[i].position);
+            if (tremorDistance > minRadarDistance && tremorDistance < maxRadarDistance) {
+                tremorVectorsOnRadar.Add(tremors[i].position);
+            }
+        }
+
+        return tremorVectorsOnRadar;
     }
 
     void ProceedToPostGame()

@@ -9,6 +9,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class Runner : NetworkBehaviour
 {
@@ -27,6 +28,11 @@ public class Runner : NetworkBehaviour
     [SerializeField] private float dodgeCooldown = 5f;
     private float dodgeCooldownTimer = 0;
     private float dodgeTimer = 0;
+
+    [Header("UI")]
+    [SerializeField] private List<GameObject> radarIcons;
+    [SerializeField] private Color nearColor;
+    [SerializeField] private Color farColor;
 
     enum MoveState {
         Normal,
@@ -56,6 +62,8 @@ public class Runner : NetworkBehaviour
         if (dodgeCooldownTimer >= 0) {
             dodgeCooldownTimer -= Time.deltaTime;
         }
+
+        CheckRadar();
 
         // Which kind of movement?
         switch(currentState) {
@@ -88,6 +96,25 @@ public class Runner : NetworkBehaviour
 
         if (dodgeTimer < 0) {
             currentState = MoveState.Normal;
+        }
+    }
+
+    private void CheckRadar() {
+        List<Vector2> radarInfo = GameManager.Instance.GetTremorPositions(transform.position);
+
+        for (int i = 0; i < radarIcons.Count; i++) {
+            if (i < radarInfo.Count) {
+                radarIcons[i].SetActive(true);
+                Quaternion newAngle = Quaternion.Euler(0, 0, Vector2.SignedAngle(Vector2.up, radarInfo[i] - new Vector2(transform.position.x, transform.position.y)));
+                radarIcons[i].GetComponent<RectTransform>().rotation = newAngle;
+                
+                // Set Color intensity for radar icon
+                Image radarImage = radarIcons[i].transform.GetComponentInChildren<Image>();
+                float lerpAlpha = 1 - Vector2.Distance(radarInfo[i], transform.position) / 13f;
+                radarImage.color = Color.Lerp(farColor, nearColor, lerpAlpha);
+            } else {
+                radarIcons[i].SetActive(false);
+            }
         }
     }
 
