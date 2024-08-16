@@ -6,11 +6,18 @@ using Unity.Netcode;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class Tremor : NetworkBehaviour
 {
     private Vector2 intentDirection = Vector2.zero;
     private const string V_CAM_NAME = "Virtual Camera";
+
+    [Header("Ability")]
+    [SerializeField] private float scanCooldown = 10f;
+    [SerializeField] private float scanDuration = 5f;
+    private float scanCooldownTimer = 0;
+    private float scanTimer = 0;
 
     [Header("Movement")]
     [SerializeField] private float speed = 100f;
@@ -60,6 +67,14 @@ public class Tremor : NetworkBehaviour
                     Move(intentDirection, rotationSpeed);
                     break;
             }
+
+            if (scanCooldownTimer > 0) {
+                scanCooldownTimer -= Time.deltaTime;
+            }
+
+            if (scanTimer > 0) {
+                RunnerScan();
+            }
         }
     }
 
@@ -87,11 +102,22 @@ public class Tremor : NetworkBehaviour
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
         rb.velocity = rb.transform.up * coastSpeed;
     }
+
+    private void StartRunnerScan() {
+        scanTimer = scanDuration;
+    }
+
+    private void RunnerScan() {
+        scanTimer -= Time.deltaTime;
+        List<Vector2> runnerPositions = GameManager.Instance.GetRunnerPositions();
+        UIManager.Instance.RefreshRadar(transform.position, runnerPositions, scanTimer);
+    }
     
 
     // Player input
     public void OnMove(InputAction.CallbackContext context)
     {
+        if (!IsOwner) { return; }
         if (context.performed)
         {
             intentDirection = context.ReadValue<Vector2>();
@@ -106,8 +132,12 @@ public class Tremor : NetworkBehaviour
 
     public void OnAction(InputAction.CallbackContext context)
     {
+        if (!IsOwner) { return; }
         if (context.performed) {
-            Debug.Log("Action");
+            if (scanCooldownTimer <= 0) {
+                scanCooldownTimer = scanCooldown;
+                StartRunnerScan();
+            }
         }
 
         if (context.started) {

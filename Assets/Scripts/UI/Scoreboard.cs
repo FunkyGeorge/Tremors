@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class Scoreboard : MonoBehaviour
 {
-    [SerializeField] private GameObject uiSpritePrefab;
     [SerializeField] private GameObject uiSpriteContainer;
     private int survivorCount = 0;
 

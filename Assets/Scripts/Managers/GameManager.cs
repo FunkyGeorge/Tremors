@@ -155,6 +155,16 @@ public class GameManager : MonoBehaviour
         return tremorVectorsOnRadar;
     }
 
+    public List<Vector2> GetRunnerPositions() {
+        List<Vector2> runnerPositions = new List<Vector2>();
+
+        foreach(GameObject runnerGO in GameObject.FindGameObjectsWithTag("Player")) {
+            runnerPositions.Add(runnerGO.transform.position);
+        }
+
+        return runnerPositions;
+    }
+
     void ProceedToPostGame()
     {
         LobbyManager.Instance.OnJoinedLobbyUpdate -= UpdateLobby_Event;

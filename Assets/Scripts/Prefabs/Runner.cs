@@ -29,11 +29,6 @@ public class Runner : NetworkBehaviour
     private float dodgeCooldownTimer = 0;
     private float dodgeTimer = 0;
 
-    [Header("UI")]
-    [SerializeField] private List<GameObject> radarIcons;
-    [SerializeField] private Color nearColor;
-    [SerializeField] private Color farColor;
-
     enum MoveState {
         Normal,
         Dodging
@@ -101,21 +96,7 @@ public class Runner : NetworkBehaviour
 
     private void CheckRadar() {
         List<Vector2> radarInfo = GameManager.Instance.GetTremorPositions(transform.position);
-
-        for (int i = 0; i < radarIcons.Count; i++) {
-            if (i < radarInfo.Count) {
-                radarIcons[i].SetActive(true);
-                Quaternion newAngle = Quaternion.Euler(0, 0, Vector2.SignedAngle(Vector2.up, radarInfo[i] - new Vector2(transform.position.x, transform.position.y)));
-                radarIcons[i].GetComponent<RectTransform>().rotation = newAngle;
-                
-                // Set Color intensity for radar icon
-                Image radarImage = radarIcons[i].transform.GetComponentInChildren<Image>();
-                float lerpAlpha = 1 - Vector2.Distance(radarInfo[i], transform.position) / 13f;
-                radarImage.color = Color.Lerp(farColor, nearColor, lerpAlpha);
-            } else {
-                radarIcons[i].SetActive(false);
-            }
-        }
+        UIManager.Instance.RefreshRadar(transform.position, radarInfo);
     }
 
     public void CollectFlag() {
