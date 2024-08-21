@@ -139,15 +139,11 @@ MonoBehaviour:
   hasFlag:
     m_InternalValue: 0
   flagPrefab: {fileID: 5141177332172640192, guid: 0023373f3ece91c4f8aab1ab62965b33, type: 3}
+  abilityUIPrefab: {fileID: 4099505366353648483, guid: 4d079b4cee26f3042bb101222663808a, type: 3}
   mSpeed: 7
   dodgeSpeed: 14
   dodgeTime: 0.15
   dodgeCooldown: 5
-  radarIcons:
-  - {fileID: 0}
-  - {fileID: 0}
-  nearColor: {r: 0.5019608, g: 0, b: 0, a: 1}
-  farColor: {r: 0.5019608, g: 0, b: 0, a: 0.29803923}
 --- !u!212 &6761296749001025670
 SpriteRenderer:
   m_ObjectHideFlags: 0

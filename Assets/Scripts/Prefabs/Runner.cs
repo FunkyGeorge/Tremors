@@ -19,7 +19,7 @@ public class Runner : NetworkBehaviour
     private const string V_CAM_NAME = "Virtual Camera";
 
     [SerializeField] private GameObject flagPrefab;
-    // public NetworkVariable<string> runnerColor = new NetworkVariable<string>(Color.white.ToString());
+    [SerializeField] private GameObject abilityUIPrefab;
 
     [Header("Movement")]
     [SerializeField] private float mSpeed = 100;
@@ -46,6 +46,9 @@ public class Runner : NetworkBehaviour
             GameObject vCam = GameObject.Find(V_CAM_NAME);
             CinemachineVirtualCamera vCamComponent = vCam.GetComponent<CinemachineVirtualCamera>();
             vCamComponent.Follow = transform;
+
+            // Create ability UI Widget
+            UIManager.Instance.SetAbilityWidget(abilityUIPrefab);
         }
     }
 
@@ -56,6 +59,7 @@ public class Runner : NetworkBehaviour
 
         if (dodgeCooldownTimer >= 0) {
             dodgeCooldownTimer -= Time.deltaTime;
+            UIManager.Instance.RefreshMovementOnWidget(dodgeCooldownTimer/dodgeCooldown);
         }
 
         CheckRadar();

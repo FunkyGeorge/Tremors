@@ -14,8 +14,6 @@ public class GameManager : MonoBehaviour
 {
     public event EventHandler<int> OnSurvivorsUpdated;
     private List<Transform> tremors = new List<Transform>();
-    [Header("Debug")]
-    [SerializeField] private Team debugStartingTeam;
 
     [Header("Config")]
     

@@ -6,6 +6,7 @@ using Unity.Netcode;
 using Unity.Services.Authentication;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerSpawner : NetworkBehaviour
@@ -14,6 +15,9 @@ public class PlayerSpawner : NetworkBehaviour
     [SerializeField] private string runnerSpawnTag;
     [SerializeField] private GameObject sharkPrefab;
     [SerializeField] private string sharkSpawnTag;
+
+    [Header("Debug")]
+    [SerializeField] private Team debugStartingTeam;
 
     public override void OnNetworkSpawn()
     {
@@ -33,23 +37,20 @@ public class PlayerSpawner : NetworkBehaviour
     }
 
     void OnClientConnected(ulong clientId) {
-        if (NetworkManager.Singleton.LocalClientId == clientId) {
-            Lobby currentLobby = LobbyManager.Instance.GetJoinedLobby();
-            if (currentLobby != null) {
-                LobbyManager.Instance.AssignPlayerConnectionId(clientId);
+        Lobby currentLobby = LobbyManager.Instance.GetJoinedLobby();
+        if (NetworkManager.Singleton.LocalClientId == clientId && currentLobby != null) {
+            LobbyManager.Instance.AssignPlayerConnectionId(clientId);
 
-                string[] tremorIds = currentLobby.Data[LobbyManager.KEY_TREMOR_IDS].Value.Split("_");
+            string[] tremorIds = currentLobby.Data[LobbyManager.KEY_TREMOR_IDS].Value.Split("_");
 
-                if (tremorIds.Contains(AuthenticationService.Instance.PlayerId)) {
-                    SpawnPlayerServerRPC(clientId, Team.SHARK);
-                } else {
-                    SpawnPlayerServerRPC(clientId, Team.RUNNER);
-                }
-            } else {
+            if (currentLobby.Players.Count == 1) {
                 // If there is no lobby, This should happen only for debugging when starting
                 // in the desert scene
-                Team teamAssignment = clientId % 2 != 0 ? Team.RUNNER : Team.SHARK;
-                SpawnPlayerServerRPC(clientId, teamAssignment);
+                SpawnPlayerServerRPC(clientId, debugStartingTeam);
+            } else if (tremorIds.Contains(AuthenticationService.Instance.PlayerId)) {
+                SpawnPlayerServerRPC(clientId, Team.SHARK);
+            } else {
+                SpawnPlayerServerRPC(clientId, Team.RUNNER);
             }
         }
     }

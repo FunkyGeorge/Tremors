@@ -13,15 +13,19 @@ public class Tremor : NetworkBehaviour
     private Vector2 intentDirection = Vector2.zero;
     private const string V_CAM_NAME = "Virtual Camera";
 
+    [SerializeField] private GameObject abilityUIPrefab;
+
     [Header("Ability")]
     [SerializeField] private float scanCooldown = 10f;
     [SerializeField] private float scanDuration = 5f;
+    [SerializeField] private float chargeCooldown = 3f;
     private float scanCooldownTimer = 0;
     private float scanTimer = 0;
+    private float chargeCooldownTimer = 0;
 
     [Header("Movement")]
-    [SerializeField] private float speed = 100f;
-    [SerializeField] private float coastSpeed = 50f;
+    [SerializeField] private float chargeSpeed = 100f;
+    [SerializeField] private float normalSpeed = 50f;
     [SerializeField] private float rotationSpeed = 10f;
     private float currentSpeed = 1f;
     private float turnSmoothingMemo = 0;
@@ -29,6 +33,7 @@ public class Tremor : NetworkBehaviour
     enum MoveState {
         Normal,
         Coast,
+        Charge,
     }
 
     private MoveState currentState = MoveState.Normal;
@@ -43,13 +48,14 @@ public class Tremor : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        currentSpeed = coastSpeed;
-
         if (IsOwner) {
             // Set follow camera
             GameObject vCam = GameObject.Find(V_CAM_NAME);
             CinemachineVirtualCamera vCamComponent = vCam.GetComponent<CinemachineVirtualCamera>();
             vCamComponent.Follow = transform;
+
+            // Create ability UI Widget
+            UIManager.Instance.SetAbilityWidget(abilityUIPrefab);
         }
     }
 
@@ -59,10 +65,26 @@ public class Tremor : NetworkBehaviour
         if (IsOwner) {
             // What kind of movement?
             switch (currentState) {
+                case MoveState.Charge:
+                    currentSpeed = chargeSpeed;
+                    Move(intentDirection, rotationSpeed * 2);
+                    break;
                 case MoveState.Coast:
+                    currentSpeed = normalSpeed;
+                    if (chargeCooldownTimer > 0) {
+                        chargeCooldownTimer -= Time.deltaTime;
+                        UIManager.Instance.RefreshMovementOnWidget(chargeCooldownTimer/chargeCooldown);
+                    }
                     Coast(intentDirection);
                     break;
                 case MoveState.Normal:
+                    currentSpeed = normalSpeed;
+                    if (chargeCooldownTimer > 0) {
+                        chargeCooldownTimer -= Time.deltaTime;
+                        UIManager.Instance.RefreshMovementOnWidget(chargeCooldownTimer/chargeCooldown);
+                    }
+                    Move(intentDirection, rotationSpeed);
+                    break;
                 default:
                     Move(intentDirection, rotationSpeed);
                     break;
@@ -70,6 +92,7 @@ public class Tremor : NetworkBehaviour
 
             if (scanCooldownTimer > 0) {
                 scanCooldownTimer -= Time.deltaTime;
+                UIManager.Instance.RefreshUniqueOnWidget(scanCooldownTimer/scanCooldown);
             }
 
             if (scanTimer > 0) {
@@ -100,7 +123,7 @@ public class Tremor : NetworkBehaviour
 
     private void Coast(Vector2 _move) {
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
-        rb.velocity = rb.transform.up * coastSpeed;
+        rb.velocity = rb.transform.up * normalSpeed;
     }
 
     private void StartRunnerScan() {
@@ -121,17 +144,41 @@ public class Tremor : NetworkBehaviour
         if (context.performed)
         {
             intentDirection = context.ReadValue<Vector2>();
-            currentState = MoveState.Normal;
+            if (currentState == MoveState.Coast) {
+                currentState = MoveState.Normal;
+            }
         }
 
         if (context.canceled)
         {
-            currentState = MoveState.Coast;
+            if (currentState != MoveState.Charge) {
+                currentState = MoveState.Coast;
+            }
         }
     }
 
     public void OnAction(InputAction.CallbackContext context)
     {
+        if (!IsOwner) { return; }
+        if (context.performed) {
+            
+        }
+
+        if (context.started) {
+            if (chargeCooldownTimer <= 0) {
+                currentState = MoveState.Charge;
+            }
+        }
+
+        if (context.canceled) {
+            if (currentState == MoveState.Charge) {
+                currentState = MoveState.Coast;
+                chargeCooldownTimer = chargeCooldown;
+            }
+        }
+    }
+
+    public void OnSkill(InputAction.CallbackContext context) {
         if (!IsOwner) { return; }
         if (context.performed) {
             if (scanCooldownTimer <= 0) {
@@ -141,11 +188,10 @@ public class Tremor : NetworkBehaviour
         }
 
         if (context.started) {
-            currentSpeed = speed;
         }
 
         if (context.canceled) {
-            currentSpeed = coastSpeed;
+
         }
     }
 }

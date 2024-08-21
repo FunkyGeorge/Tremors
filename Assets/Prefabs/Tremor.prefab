@@ -130,22 +130,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c28ac93ed750d8844bc3e4cbf593724e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  abilityUIPrefab: {fileID: 4099505366353648483, guid: f611f6192b868084b9019d3b84ed1091, type: 3}
   scanCooldown: 10
   scanDuration: 5
-  speed: 10
-  coastSpeed: 4
+  chargeCooldown: 2.5
+  chargeSpeed: 8
+  normalSpeed: 5
   rotationSpeed: 50
-  UICanvas: {fileID: 0}
-  radarIcons:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  radarColor: {r: 0.5019608, g: 0, b: 0, a: 0.8}
 --- !u!60 &4601551718518090858
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -254,6 +245,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 4f50a7cd-6b5f-4eeb-8a72-a27ee650a605
     m_ActionName: RunnerGameplay/Action[/Keyboard/space]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2142076031756524906}
+        m_TargetAssemblyTypeName: Tremor, Assembly-CSharp
+        m_MethodName: OnSkill
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: e47e36ea-3be5-4cb5-8dda-501da959466a
+    m_ActionName: RunnerGameplay/Skill[/Keyboard/space]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: RunnerGameplay
