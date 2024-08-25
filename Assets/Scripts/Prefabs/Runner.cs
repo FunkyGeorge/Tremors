@@ -3,13 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
 using Unity.Netcode;
-using Unity.Services.Authentication;
 using Unity.Services.Lobbies.Models;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
 
 public class Runner : NetworkBehaviour
 {
@@ -20,6 +16,7 @@ public class Runner : NetworkBehaviour
 
     [SerializeField] private GameObject flagPrefab;
     [SerializeField] private GameObject abilityUIPrefab;
+    [SerializeField] private GameObject ghostPrefab;
 
     [Header("Movement")]
     [SerializeField] private float mSpeed = 100;
@@ -120,7 +117,7 @@ public class Runner : NetworkBehaviour
     }
 
     public void Eliminate() {
-        EliminateServerRPC();
+        EliminateServerRPC(OwnerClientId);
     }
 
     private void UpdateLobby_Event(object sender, LobbyManager.LobbyEventArgs e) {
@@ -141,12 +138,10 @@ public class Runner : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    void EliminateServerRPC() {
-        if (hasFlag.Value) {
-            // Drop a flag
-            Instantiate(flagPrefab, transform);
-            hasFlag.Value = false;
-        }
+    void EliminateServerRPC(ulong clientId) {
+        GetComponent<CapsuleCollider2D>().enabled = false;
+        GameObject spectatorGhost = Instantiate(ghostPrefab, transform);
+        spectatorGhost.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
 
         Destroy(gameObject);
     }

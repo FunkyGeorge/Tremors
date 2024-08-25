@@ -67,7 +67,9 @@ public class GameManager : NetworkBehaviour
 
     public override void OnDestroy() {
         LobbyManager.Instance.OnJoinedLobbyUpdate -= UpdateLobby_Event;
-        NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+        if (NetworkManager.Singleton) {
+            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+        }
     }
 
     private void OnClientConnected(ulong clientId) {
