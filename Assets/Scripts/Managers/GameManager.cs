@@ -10,14 +10,17 @@ using Unity.Services.Relay.Models;
 using Unity.Netcode.Transports.UTP;
 using UnityEngine.SceneManagement;
 
-public class GameManager : MonoBehaviour
+public class GameManager : NetworkBehaviour
 {
     public event EventHandler<int> OnSurvivorsUpdated;
     private List<Transform> tremors = new List<Transform>();
 
     [Header("Config")]
+    [SerializeField] private float gameTimeLimit = 5 * 60;
+    private float gameTimeRemaining = -1f;
     
     private string gameCodeString = "";
+    private bool isGameActive = false;
 
     private static GameManager _instance;
     public static GameManager Instance
@@ -33,6 +36,13 @@ public class GameManager : MonoBehaviour
         else Destroy(gameObject);
     }
 
+    public override void OnNetworkSpawn()
+    {
+        if (NetworkManager.Singleton.IsServer) {
+            NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
+        }
+    }
+
     // Start is called before the first frame update
     async void Start()
     {
@@ -44,11 +54,28 @@ public class GameManager : MonoBehaviour
             await LobbyManager.Instance.CreateLobby("Debug Lobby", 1, true, LobbyManager.GameMode.CaptureTheFlag);
         }
         StartRelayHost();
-
     }
 
-    private void OnDestroy() {
+    void Update() {
+        if (gameTimeRemaining >= 0) {
+            gameTimeRemaining -= Time.deltaTime;
+            UIManager.Instance.RefreshGameTimer(gameTimeRemaining);
+        } else if (isGameActive && gameTimeRemaining <= 0) {
+            CompleteGame(Team.SHARK);
+        }
+    }
+
+    public override void OnDestroy() {
         LobbyManager.Instance.OnJoinedLobbyUpdate -= UpdateLobby_Event;
+        NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+    }
+
+    private void OnClientConnected(ulong clientId) {
+        Lobby joinedLobby = LobbyManager.Instance.GetJoinedLobby();
+        if (NetworkManager.Singleton.ConnectedClientsIds.Count == joinedLobby.Players.Count) {
+            InitializeGameTimeClientRPC(gameTimeLimit);
+            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
+        }
     }
 
     async void StartRelayHost() {
@@ -97,6 +124,12 @@ public class GameManager : MonoBehaviour
         } catch (LobbyServiceException err) {
             Debug.Log(err);
         }
+    }
+
+    [ClientRpc]
+    void InitializeGameTimeClientRPC(float gameTime) {
+        gameTimeRemaining = gameTime;
+        isGameActive = true;
     }
 
     async void JoinRelayAsClient(string relayCode) {
@@ -172,6 +205,7 @@ public class GameManager : MonoBehaviour
     }
 
     public void CompleteGame(Team winners) {
+        isGameActive = false;
         if (LobbyManager.Instance.IsLobbyHost()) {
             LobbyManager.Instance.UpdateLobby(new UpdateLobbyOptions {
                 Data = new Dictionary<string, DataObject> {

@@ -100,7 +100,9 @@ public class Runner : NetworkBehaviour
 
     private void CheckRadar() {
         List<Vector2> radarInfo = GameManager.Instance.GetTremorPositions(transform.position);
-        UIManager.Instance.RefreshRadar(transform.position, radarInfo);
+        if (UIManager.Instance) {
+            UIManager.Instance.RefreshRadar(transform.position, radarInfo);
+        }
     }
 
     public void CollectFlag() {

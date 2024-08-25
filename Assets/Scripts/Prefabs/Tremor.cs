@@ -38,13 +38,6 @@ public class Tremor : NetworkBehaviour
 
     private MoveState currentState = MoveState.Normal;
 
-    public override void OnNetworkSpawn()
-    {
-        SpriteRenderer sr = GetComponent<SpriteRenderer>();
-        Player localPlayer = LobbyManager.Instance.GetPlayer();
-        Debug.Log("Logging Color: " + localPlayer.Data[LobbyManager.KEY_PLAYER_COLOR].Value);
-    }
-
     // Start is called before the first frame update
     void Start()
     {

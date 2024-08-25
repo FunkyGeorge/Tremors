@@ -1,10 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+    [SerializeField] private TMP_Text timerText;
     [SerializeField] private List<GameObject> radarIcons;
     [SerializeField] private Color radarColor;
     [SerializeField] private GameObject abilityWidgetSocket;
@@ -91,5 +94,9 @@ public class UIManager : MonoBehaviour
         if (abilityWidget) {
             abilityWidget.RefreshUniqueAbilityUI(fill);
         }
+    }
+
+    public void RefreshGameTimer(float timeLeft) {
+        timerText.text = TimeSpan.FromSeconds(timeLeft).ToString("mm':'ss");
     }
 }
