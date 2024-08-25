@@ -103,13 +103,11 @@ public class Runner : NetworkBehaviour
     }
 
     public void CollectFlag() {
-        if (IsOwner) {
-            CollectFlagServerRPC();
-        }
+        CollectFlagClientRPC();
     }
 
-    [ServerRpc]
-    private void CollectFlagServerRPC() {
+    [ClientRpc]
+    private void CollectFlagClientRPC() {
         GameObject flagSocket = transform.Find("Flag Socket").gameObject;
         SpriteRenderer socketSprite = flagSocket.GetComponent<SpriteRenderer>();
         socketSprite.sprite = flagPrefab.GetComponent<SpriteRenderer>().sprite;
