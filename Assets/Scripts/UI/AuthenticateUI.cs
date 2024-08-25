@@ -14,7 +14,7 @@ public class AuthenticateUI : MonoBehaviour {
     private void Awake() {
         authenticateButton.onClick.AddListener(async () => {
             try {
-                await LobbyManager.Instance.Authenticate(EditPlayerName.Instance.GetPlayerName());
+                await LobbyManager.Instance.Authenticate(EditPlayerName.Instance.GetPlayerName().Replace(" ", "_"));
                 Hide();
             } catch (AuthenticationException e) {
                 Debug.Log(e);
