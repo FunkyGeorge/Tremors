@@ -21,7 +21,6 @@ public class Flag : MonoBehaviour
         Runner validRunner = other.GetComponent<Runner>();
         if (validRunner) {
             validRunner.CollectFlag();
-            Destroy(gameObject);
         }
     }
 }
