@@ -26,6 +26,9 @@ public class Runner : NetworkBehaviour
     private float dodgeCooldownTimer = 0;
     private float dodgeTimer = 0;
 
+    [Header("Sound")]
+    [SerializeField] private AudioSource footstepSource;
+
     enum MoveState {
         Normal,
         Dodging
@@ -72,6 +75,14 @@ public class Runner : NetworkBehaviour
             case MoveState.Dodging:
                 DodgeMove(intentDirection);
                 break;
+        }
+
+        if (intentDirection != Vector2.zero) {
+            if (!footstepSource.isPlaying) {
+                SetFootstepSoundClientRPC(true);
+            }
+        } else {
+            SetFootstepSoundClientRPC(false);
         }
     }
 
@@ -133,6 +144,15 @@ public class Runner : NetworkBehaviour
                         Enum.Parse<PlayerColor>(player.Data[LobbyManager.KEY_PLAYER_COLOR].Value));
                 }
             });
+    }
+
+    [ClientRpc]
+    private void SetFootstepSoundClientRPC(bool active) {
+        if (active) {
+            footstepSource.Play();
+        } else {
+            footstepSource.Stop();
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]

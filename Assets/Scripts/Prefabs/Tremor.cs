@@ -30,6 +30,10 @@ public class Tremor : NetworkBehaviour
     private float currentSpeed = 1f;
     private float turnSmoothingMemo = 0;
 
+    [Header("Sound")]
+    [SerializeField] private AudioSource chompSource;
+    [SerializeField] private AudioSource slitherSource;
+
     enum MoveState {
         Normal,
         Coast,
@@ -83,6 +87,20 @@ public class Tremor : NetworkBehaviour
                     break;
             }
 
+            // Set slither volumes over network
+            switch (currentState) {
+                case MoveState.Charge:
+                    SetSlitherVolumeClientRPC(0.15f);
+                    break;
+                case MoveState.Normal:
+                case MoveState.Coast:
+                    SetSlitherVolumeClientRPC(0.06f);
+                    break;
+                default:
+                    SetSlitherVolumeClientRPC(0.06f);
+                    break;
+            }
+
             if (scanCooldownTimer > 0) {
                 scanCooldownTimer -= Time.deltaTime;
                 UIManager.Instance.RefreshUniqueOnWidget(scanCooldownTimer/scanCooldown);
@@ -97,6 +115,7 @@ public class Tremor : NetworkBehaviour
     void OnCollisionEnter2D(Collision2D collision) {
         if (collision.gameObject.tag == "Player") {
             collision.gameObject.GetComponent<Runner>().Eliminate();
+            PlayChompSoundClientRPC();
         }
     }
 
@@ -127,6 +146,20 @@ public class Tremor : NetworkBehaviour
         scanTimer -= Time.deltaTime;
         List<Vector2> runnerPositions = GameManager.Instance.GetRunnerPositions();
         UIManager.Instance.RefreshRadar(transform.position, runnerPositions, scanTimer);
+    }
+
+    [ClientRpc]
+    private void SetSlitherVolumeClientRPC(float volume) {
+        if (!slitherSource.isPlaying) {
+            slitherSource.Play();
+        }
+
+        slitherSource.volume = volume;
+    }
+
+    [ClientRpc]
+    private void PlayChompSoundClientRPC(){
+        chompSource.PlayOneShot(chompSource.clip);
     }
     
 

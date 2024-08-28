@@ -47,8 +47,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   runnerPrefab: {fileID: 8575843575439218631, guid: 8a00df3bbd21f0c47bac477545bcf92a, type: 3}
   runnerSpawnTag: Runner Spawn Point
-  sharkPrefab: {fileID: 3097528793694474676, guid: 9bb9574cc81644842ac0b7212a6b5c07, type: 3}
+  sharkPrefab: {fileID: 1772422659593461839, guid: 9bb9574cc81644842ac0b7212a6b5c07, type: 3}
   sharkSpawnTag: Shark Spawn Point
+  debugStartingTeam: 0
 --- !u!114 &4140824770040145204
 MonoBehaviour:
   m_ObjectHideFlags: 0
