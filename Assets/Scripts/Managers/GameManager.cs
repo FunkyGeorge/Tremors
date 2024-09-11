@@ -9,6 +9,7 @@ using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using Unity.Netcode.Transports.UTP;
 using UnityEngine.SceneManagement;
+using Unity.Networking.Transport.Relay;
 
 public class GameManager : NetworkBehaviour
 {
@@ -89,13 +90,7 @@ public class GameManager : NetworkBehaviour
 
                     string joinCode = await RelayService.Instance.GetJoinCodeAsync(alloc.AllocationId);
 
-                    NetworkManager.Singleton.GetComponent<UnityTransport>().SetHostRelayData(
-                        alloc.RelayServer.IpV4,
-                        (ushort)alloc.RelayServer.Port,
-                        alloc.AllocationIdBytes,
-                        alloc.Key,
-                        alloc.ConnectionData
-                    );
+                    NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(new RelayServerData(alloc, "wss"));
 
                     NetworkManager.Singleton.StartHost();
 
@@ -139,14 +134,7 @@ public class GameManager : NetworkBehaviour
             try {
                 JoinAllocation joinAlloc = await RelayService.Instance.JoinAllocationAsync(relayCode);
 
-                NetworkManager.Singleton.GetComponent<UnityTransport>().SetClientRelayData(
-                        joinAlloc.RelayServer.IpV4,
-                        (ushort)joinAlloc.RelayServer.Port,
-                        joinAlloc.AllocationIdBytes,
-                        joinAlloc.Key,
-                        joinAlloc.ConnectionData,
-                        joinAlloc.HostConnectionData
-                    );
+                NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(new RelayServerData(joinAlloc, "wss"));
                 
                 Debug.Log("Joining with relay code: " + relayCode);
                 NetworkManager.Singleton.StartClient();

@@ -43007,7 +43007,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5024753748812613069, guid: a01623261d9d4bd43b707a1041795c54, type: 3}
       propertyPath: debugStartingTeam
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7977402980126590302, guid: a01623261d9d4bd43b707a1041795c54, type: 3}
       propertyPath: m_RootOrder
@@ -43414,6 +43414,14 @@ PrefabInstance:
     - target: {fileID: 3144477616665189198, guid: bbee45191afa38042ba76afad006baca, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4156232087076322290, guid: bbee45191afa38042ba76afad006baca, type: 3}
+      propertyPath: m_ProtocolType
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4156232087076322290, guid: bbee45191afa38042ba76afad006baca, type: 3}
+      propertyPath: m_UseWebSockets
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8852111107791252207, guid: bbee45191afa38042ba76afad006baca, type: 3}
       propertyPath: NetworkConfig.ProtocolVersion
