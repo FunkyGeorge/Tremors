@@ -15,6 +15,7 @@ public class LobbyUI : MonoBehaviour {
 
     [SerializeField] private Transform playerSingleTemplate;
     [SerializeField] private Transform container;
+    [SerializeField] private Transform container2;
     [SerializeField] private TextMeshProUGUI lobbyNameText;
     [SerializeField] private TextMeshProUGUI playerCountText;
     [SerializeField] private Button leaveLobbyButton;
@@ -123,8 +124,9 @@ public class LobbyUI : MonoBehaviour {
     private void UpdateLobby(Lobby lobby) {
         ClearLobby();
 
+        int playerIndex = 0;
         foreach (Player player in lobby.Players) {
-            Transform playerSingleTransform = Instantiate(playerSingleTemplate, container);
+            Transform playerSingleTransform = Instantiate(playerSingleTemplate, playerIndex % 2 == 0 ? container : container2);
             playerSingleTransform.gameObject.SetActive(true);
             LobbyPlayerSingleUI lobbyPlayerSingleUI = playerSingleTransform.GetComponent<LobbyPlayerSingleUI>();
 
@@ -134,6 +136,7 @@ public class LobbyUI : MonoBehaviour {
             );
 
             lobbyPlayerSingleUI.UpdatePlayer(player);
+            playerIndex++;
         }
 
         if (LobbyManager.Instance.HasStartedGame()) {
@@ -148,6 +151,11 @@ public class LobbyUI : MonoBehaviour {
 
     private void ClearLobby() {
         foreach (Transform child in container) {
+            if (child == playerSingleTemplate) continue;
+            Destroy(child.gameObject);
+        }
+
+        foreach (Transform child in container2) {
             if (child == playerSingleTemplate) continue;
             Destroy(child.gameObject);
         }
