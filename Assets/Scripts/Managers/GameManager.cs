@@ -188,20 +188,26 @@ public class GameManager : NetworkBehaviour
 
     void ProceedToPostGame()
     {
-        LobbyManager.Instance.OnJoinedLobbyUpdate -= UpdateLobby_Event;
         if (NetworkManager.Singleton.IsServer) {
             NetworkManager.Singleton.SceneManager.LoadScene("PostGame", LoadSceneMode.Single);
         }
     }
 
     public void CompleteGame(Team winners) {
-        isGameActive = false;
-        if (LobbyManager.Instance.IsLobbyHost()) {
+        if (NetworkManager.Singleton.IsHost) {
+            CompleteGameClientRPC(winners);
+
             LobbyManager.Instance.UpdateLobby(new UpdateLobbyOptions {
                 Data = new Dictionary<string, DataObject> {
                     { LobbyManager.KEY_WINNING_TEAM, new DataObject(DataObject.VisibilityOptions.Member, winners.ToString()) }
                 }
             });
         }
+    }
+
+    [ClientRpc]
+    private void CompleteGameClientRPC(Team winners) {
+        isGameActive = false;
+        LobbyManager.Instance.gameWinners = winners;
     }
 }

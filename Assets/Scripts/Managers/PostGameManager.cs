@@ -27,11 +27,7 @@ public class PostGameManager : MonoBehaviour
 
     void ShowWinningText() {
         try {
-            Lobby joinedLobby = LobbyManager.Instance.GetJoinedLobby();
-
-            Team winners = Enum.Parse<Team>(joinedLobby.Data[LobbyManager.KEY_WINNING_TEAM].Value);
-
-            winningText.text = string.Format("{0} win!", winners == Team.RUNNER ? "Runners" : "Tremors");
+            winningText.text = string.Format("{0} win!", LobbyManager.Instance.gameWinners == Team.RUNNER ? "Runners" : "Tremors");
         } catch (LobbyServiceException e) {
             Debug.Log(e);
         }

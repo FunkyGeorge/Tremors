@@ -57,6 +57,7 @@ public class LobbyManager : MonoBehaviour {
     private Lobby joinedLobby;
     private PlayerColor _playerColor = PlayerColor.White;
     private string playerName;
+    public Team gameWinners = Team.RUNNER;
 
     public ulong localClientId = 100;
 
