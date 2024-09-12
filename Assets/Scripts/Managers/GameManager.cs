@@ -194,7 +194,7 @@ public class GameManager : NetworkBehaviour
     }
 
     public void CompleteGame(Team winners) {
-        if (NetworkManager.Singleton.IsHost) {
+        if (NetworkManager.Singleton && NetworkManager.Singleton.IsHost) {
             CompleteGameClientRPC(winners);
 
             LobbyManager.Instance.UpdateLobby(new UpdateLobbyOptions {

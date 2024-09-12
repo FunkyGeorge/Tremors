@@ -12,9 +12,11 @@ using UnityEngine;
 public class PlayerSpawner : NetworkBehaviour
 {
     [SerializeField] private GameObject runnerPrefab;
-    [SerializeField] private string runnerSpawnTag;
     [SerializeField] private GameObject sharkPrefab;
-    [SerializeField] private string sharkSpawnTag;
+    [SerializeField] private List<Transform> runnerSpawns;
+    [SerializeField] private List<Transform> tremorSpawns;
+    private int runnerSpawnIndex = 0;
+    private int tremorSpawnIndex = 0;
 
     [Header("Debug")]
     [SerializeField] private Team debugStartingTeam;
@@ -61,17 +63,20 @@ public class PlayerSpawner : NetworkBehaviour
 
     [ServerRpc(RequireOwnership = false)]
     private void SpawnPlayerServerRPC(ulong clientId, Team team) {
-        GameObject[] spawnPoints;
+        Transform spawnPoint;
         GameObject spawnPrefab;
 
         if (team == Team.RUNNER) {
-            spawnPoints = GameObject.FindGameObjectsWithTag(runnerSpawnTag);
+            spawnPoint = runnerSpawns[runnerSpawnIndex];
             spawnPrefab = runnerPrefab;
+            runnerSpawnIndex++;
         } else {
-            spawnPoints = GameObject.FindGameObjectsWithTag(sharkSpawnTag);
+            spawnPoint = tremorSpawns[tremorSpawnIndex];
             spawnPrefab = sharkPrefab;
+            tremorSpawnIndex++;
         }
-        GameObject spawnedPlayer = Instantiate(spawnPrefab, spawnPoints[0].transform);
+        
+        GameObject spawnedPlayer = Instantiate(spawnPrefab, spawnPoint);
         spawnedPlayer.GetComponent<NetworkObject>().SpawnWithOwnership(clientId);
     }
 }

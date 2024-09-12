@@ -4,8 +4,6 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Runner Spawn Point
-  - Shark Spawn Point
   - Tremor
   layers:
   - Default

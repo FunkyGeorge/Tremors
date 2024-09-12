@@ -31,7 +31,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5024753748812613069
 MonoBehaviour:
@@ -46,9 +46,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   runnerPrefab: {fileID: 8575843575439218631, guid: 8a00df3bbd21f0c47bac477545bcf92a, type: 3}
-  runnerSpawnTag: Runner Spawn Point
   sharkPrefab: {fileID: 1772422659593461839, guid: 9bb9574cc81644842ac0b7212a6b5c07, type: 3}
-  sharkSpawnTag: Shark Spawn Point
+  runnerSpawns:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  tremorSpawns:
+  - {fileID: 0}
+  - {fileID: 0}
   debugStartingTeam: 0
 --- !u!114 &4140824770040145204
 MonoBehaviour:
