@@ -122,7 +122,9 @@ public class Runner : NetworkBehaviour
         GameObject flagSocket = transform.Find("Flag Socket").gameObject;
         SpriteRenderer socketSprite = flagSocket.GetComponent<SpriteRenderer>();
         socketSprite.sprite = flagPrefab.GetComponent<SpriteRenderer>().sprite;
-        hasFlag.Value = true;
+        if (NetworkManager.Singleton.IsHost) {
+            hasFlag.Value = true;
+        }
     }
 
     public void Eliminate() {
