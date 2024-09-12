@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/PostGame.unity
     guid: e70bb6da4fd12d24a830a19502eb383f
+  - enabled: 1
+    path: Assets/Scenes/Desert_Iso.unity
+    guid: 2326c6483babb644daa9ca2624980225
   m_configObjects: {}
