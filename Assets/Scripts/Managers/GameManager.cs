@@ -52,7 +52,7 @@ public class GameManager : NetworkBehaviour
         Lobby joinedLobby = LobbyManager.Instance.GetJoinedLobby();
         if (joinedLobby == null) {
             await LobbyManager.Instance.Authenticate("Debug");
-            await LobbyManager.Instance.CreateLobby("Debug Lobby", 1, true, LobbyManager.GameMode.CaptureTheFlag);
+            await LobbyManager.Instance.CreateLobby("Debug Lobby", 1, true);
         }
         StartRelayHost();
     }

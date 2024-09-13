@@ -23,7 +23,6 @@ public class LobbyManager : MonoBehaviour {
     public const string KEY_CLIENT_ID = "ClientId";
     public const string KEY_PLAYER_COLOR = "Color";
     public const string KEY_TREMOR_IDS = "TremorIds";
-    public const string KEY_GAME_MODE = "GameMode";
     public const string KEY_GAME_CODE = "GameCode";
     public const string KEY_WINNING_TEAM = "WinningTeam";
 
@@ -34,7 +33,6 @@ public class LobbyManager : MonoBehaviour {
     public event EventHandler<LobbyEventArgs> OnJoinedLobby;
     public event EventHandler<LobbyEventArgs> OnJoinedLobbyUpdate;
     public event EventHandler<LobbyEventArgs> OnKickedFromLobby;
-    public event EventHandler<LobbyEventArgs> OnLobbyGameModeChanged;
     public class LobbyEventArgs : EventArgs {
         public Lobby lobby;
     }
@@ -42,12 +40,6 @@ public class LobbyManager : MonoBehaviour {
     public event EventHandler<OnLobbyListChangedEventArgs> OnLobbyListChanged;
     public class OnLobbyListChangedEventArgs : EventArgs {
         public List<Lobby> lobbyList;
-    }
-
-
-    public enum GameMode {
-        CaptureTheFlag,
-        Conquest
     }
 
 
@@ -185,33 +177,14 @@ public class LobbyManager : MonoBehaviour {
         });
     }
 
-    public void ChangeGameMode() {
-        if (IsLobbyHost()) {
-            GameMode gameMode =
-                Enum.Parse<GameMode>(joinedLobby.Data[KEY_GAME_MODE].Value);
 
-            switch (gameMode) {
-                default:
-                case GameMode.CaptureTheFlag:
-                    gameMode = GameMode.Conquest;
-                    break;
-                case GameMode.Conquest:
-                    gameMode = GameMode.CaptureTheFlag;
-                    break;
-            }
-
-            UpdateLobbyGameMode(gameMode);
-        }
-    }
-
-    public async System.Threading.Tasks.Task CreateLobby(string lobbyName, int maxPlayers, bool isPrivate, GameMode gameMode) {
+    public async System.Threading.Tasks.Task CreateLobby(string lobbyName, int maxPlayers, bool isPrivate) {
         Player player = GetPlayer();
 
         CreateLobbyOptions options = new CreateLobbyOptions {
             Player = player,
             IsPrivate = isPrivate,
             Data = new Dictionary<string, DataObject> {
-                { KEY_GAME_MODE, new DataObject(DataObject.VisibilityOptions.Public, gameMode.ToString()) },
                 { KEY_GAME_CODE, new DataObject(DataObject.VisibilityOptions.Member, "") },
                 { KEY_TREMOR_IDS, new DataObject(DataObject.VisibilityOptions.Member, "") },
                 { KEY_WINNING_TEAM, new DataObject(DataObject.VisibilityOptions.Member, "") }
@@ -424,24 +397,6 @@ public class LobbyManager : MonoBehaviour {
         }
     }
 
-    public async void UpdateLobbyGameMode(GameMode gameMode) {
-        try {
-            Debug.Log("UpdateLobbyGameMode " + gameMode);
-            
-            Lobby lobby = await Lobbies.Instance.UpdateLobbyAsync(joinedLobby.Id, new UpdateLobbyOptions {
-                Data = new Dictionary<string, DataObject> {
-                    { KEY_GAME_MODE, new DataObject(DataObject.VisibilityOptions.Public, gameMode.ToString()) }
-                }
-            });
-
-            joinedLobby = lobby;
-            PrefsClient.SetPlayerLobby(lobby.Id);
-
-            OnLobbyGameModeChanged?.Invoke(this, new LobbyEventArgs { lobby = joinedLobby });
-        } catch (LobbyServiceException e) {
-            Debug.Log(e);
-        }
-    }
 
     public async void OnStartGame() {
         try {
