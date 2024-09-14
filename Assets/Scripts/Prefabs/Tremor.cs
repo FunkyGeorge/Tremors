@@ -10,6 +10,7 @@ using UnityEngine.UI;
 
 public class Tremor : NetworkBehaviour
 {
+    private Rigidbody2D rb;
     private Vector2 intentDirection = Vector2.zero;
     private const string V_CAM_NAME = "Virtual Camera";
 
@@ -29,6 +30,7 @@ public class Tremor : NetworkBehaviour
     [SerializeField] private float rotationSpeed = 10f;
     private float currentSpeed = 1f;
     private float turnSmoothingMemo = 0;
+    private float stunnedTimer = 0;
 
     [Header("Sound")]
     [SerializeField] private AudioSource chompSource;
@@ -38,6 +40,7 @@ public class Tremor : NetworkBehaviour
         Normal,
         Coast,
         Charge,
+        Stunned,
     }
 
     private MoveState currentState = MoveState.Normal;
@@ -46,10 +49,12 @@ public class Tremor : NetworkBehaviour
     void Start()
     {
         if (IsOwner) {
+            rb = GetComponent<Rigidbody2D>();
             // Set follow camera
             GameObject vCam = GameObject.Find(V_CAM_NAME);
             CinemachineVirtualCamera vCamComponent = vCam.GetComponent<CinemachineVirtualCamera>();
             vCamComponent.Follow = transform;
+
 
             // Create ability UI Widget
             UIManager.Instance.SetAbilityWidget(abilityUIPrefab);
@@ -64,7 +69,8 @@ public class Tremor : NetworkBehaviour
             switch (currentState) {
                 case MoveState.Charge:
                     currentSpeed = chargeSpeed;
-                    Move(intentDirection, rotationSpeed * 2);
+                    RotateBody(intentDirection, rotationSpeed * 2);
+                    Move(intentDirection);
                     break;
                 case MoveState.Coast:
                     currentSpeed = normalSpeed;
@@ -72,7 +78,7 @@ public class Tremor : NetworkBehaviour
                         chargeCooldownTimer -= Time.deltaTime;
                         UIManager.Instance.RefreshMovementOnWidget(chargeCooldownTimer/chargeCooldown);
                     }
-                    Coast(intentDirection);
+                    Coast();
                     break;
                 case MoveState.Normal:
                     currentSpeed = normalSpeed;
@@ -80,10 +86,19 @@ public class Tremor : NetworkBehaviour
                         chargeCooldownTimer -= Time.deltaTime;
                         UIManager.Instance.RefreshMovementOnWidget(chargeCooldownTimer/chargeCooldown);
                     }
-                    Move(intentDirection, rotationSpeed);
+                    RotateBody(intentDirection, rotationSpeed * 2);
+                    Move(intentDirection);
+                    break;
+                case MoveState.Stunned:
+                    if (stunnedTimer <= 0) {
+                        currentState = MoveState.Normal;
+                    }
+                    stunnedTimer -= Time.deltaTime;
+                    RotateBody(intentDirection, rotationSpeed * 2);
                     break;
                 default:
-                    Move(intentDirection, rotationSpeed);
+                    RotateBody(intentDirection, rotationSpeed * 2);
+                    Move(intentDirection);
                     break;
             }
 
@@ -116,25 +131,27 @@ public class Tremor : NetworkBehaviour
         if (collision.gameObject.tag == "Player") {
             collision.gameObject.GetComponent<Runner>().Eliminate();
             PlayChompSoundClientRPC();
+        } else {
+            currentState = MoveState.Stunned;
+            stunnedTimer = 0.3f;
         }
     }
 
-
-
-    private void Move(Vector2 _move, float _rotationSpeed) {
-        Rigidbody2D rb = GetComponent<Rigidbody2D>();
-        
+    private void RotateBody(Vector2 _move, float _rotationSpeed) {
         if (_move.magnitude > 0) {
             float targetAngle = -Mathf.Atan2(_move.x, _move.y) * Mathf.Rad2Deg;
             float angle = Mathf.SmoothDampAngle(transform.eulerAngles.z, targetAngle, ref turnSmoothingMemo, _rotationSpeed/1000);
             rb.MoveRotation(angle);
+        }
+    }
 
+    private void Move(Vector2 _move) {
+        if (_move.magnitude > 0) {
             rb.velocity = rb.transform.up * currentSpeed;
         }
     }
 
-    private void Coast(Vector2 _move) {
-        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+    private void Coast() {
         rb.velocity = rb.transform.up * normalSpeed;
     }
 
