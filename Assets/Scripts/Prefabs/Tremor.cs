@@ -31,6 +31,7 @@ public class Tremor : NetworkBehaviour
     private float currentSpeed = 1f;
     private float turnSmoothingMemo = 0;
     private float stunnedTimer = 0;
+    private Vector2 lureTarget;
 
     [Header("Sound")]
     [SerializeField] private AudioSource chompSource;
@@ -40,6 +41,7 @@ public class Tremor : NetworkBehaviour
         Normal,
         Coast,
         Charge,
+        Lured,
         Stunned,
     }
 
@@ -88,6 +90,17 @@ public class Tremor : NetworkBehaviour
                     }
                     RotateBody(intentDirection, rotationSpeed * 2);
                     Move(intentDirection);
+                    break;
+                case MoveState.Lured:
+                    Debug.Log("Lured");
+                    Vector2 luredVector = lureTarget - new Vector2(transform.position.x, transform.position.y);
+                    luredVector.Normalize();
+                    RotateBody(luredVector, rotationSpeed * 0.5f);
+                    Move(luredVector);
+
+                    if (Vector2.Distance(lureTarget, transform.position) < 0.1) {
+                        currentState = MoveState.Normal;
+                    }
                     break;
                 case MoveState.Stunned:
                     if (stunnedTimer <= 0) {
@@ -163,6 +176,11 @@ public class Tremor : NetworkBehaviour
         scanTimer -= Time.deltaTime;
         List<Vector2> runnerPositions = GameManager.Instance.GetRunnerPositions();
         UIManager.Instance.RefreshRadar(transform.position, runnerPositions, scanTimer);
+    }
+
+    public void SetLure(Vector2 lure) {
+        currentState = MoveState.Lured;
+        lureTarget = lure;
     }
 
     [ClientRpc]

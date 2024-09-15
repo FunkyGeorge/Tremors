@@ -26,6 +26,11 @@ public class Runner : NetworkBehaviour
     private float dodgeCooldownTimer = 0;
     private float dodgeTimer = 0;
 
+    [Header("Skill")]
+    [SerializeField] private GameObject lurePrefab;
+    [SerializeField] private float skillCooldown = 180f;
+    private float skillCooldownTimer = 0;
+
     [Header("Sound")]
     [SerializeField] private AudioSource footstepSource;
 
@@ -60,6 +65,11 @@ public class Runner : NetworkBehaviour
         if (dodgeCooldownTimer >= 0) {
             dodgeCooldownTimer -= Time.deltaTime;
             UIManager.Instance.RefreshMovementOnWidget(dodgeCooldownTimer/dodgeCooldown);
+        }
+
+        if (skillCooldownTimer >= 0) {
+            skillCooldownTimer -= Time.deltaTime;
+            UIManager.Instance.RefreshUniqueOnWidget(skillCooldownTimer/skillCooldown);
         }
 
         CheckRadar();
@@ -104,6 +114,19 @@ public class Runner : NetworkBehaviour
         if (dodgeTimer < 0) {
             currentState = MoveState.Normal;
         }
+    }
+
+    private void DropLure() {
+        if (skillCooldownTimer <= 0) {
+            SpawnLureServerRPC();
+            skillCooldownTimer = skillCooldown;
+        }
+    }
+
+    [ServerRpc]
+    private void SpawnLureServerRPC() {
+        GameObject lureObject = Instantiate(lurePrefab, transform.position, Quaternion.identity);
+        lureObject.GetComponent<NetworkObject>().Spawn();
     }
 
     private void CheckRadar() {
@@ -192,6 +215,13 @@ public class Runner : NetworkBehaviour
                 currentState = MoveState.Dodging;
                 dodgeTimer = dodgeTime;
             }
+        }
+    }
+
+    public void OnSkill(InputAction.CallbackContext context)
+    {
+        if (context.performed) {
+            DropLure();
         }
     }
 }
