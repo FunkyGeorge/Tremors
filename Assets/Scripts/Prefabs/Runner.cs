@@ -10,7 +10,10 @@ using UnityEngine.InputSystem;
 public class Runner : NetworkBehaviour
 {
     public NetworkVariable<bool> hasFlag = new NetworkVariable<bool>(false);
+    public NetworkVariable<bool> isFlipped = new NetworkVariable<bool>(false);
 
+    private Rigidbody2D rb;
+    private SpriteRenderer sr;
     private Vector2 intentDirection = Vector2.zero;
     private const string V_CAM_NAME = "Virtual Camera";
 
@@ -45,6 +48,8 @@ public class Runner : NetworkBehaviour
     void Start()
     {
         LobbyManager.Instance.OnJoinedLobbyUpdate += UpdateLobby_Event;
+        rb = GetComponent<Rigidbody2D>();
+        sr = GetComponent<SpriteRenderer>();
 
         if (IsOwner) {
             // Set follow camera
@@ -60,6 +65,8 @@ public class Runner : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
+        sr.flipX = isFlipped.Value;
+
         if (!IsOwner) { return; }
 
         if (dodgeCooldownTimer >= 0) {
@@ -87,6 +94,12 @@ public class Runner : NetworkBehaviour
                 break;
         }
 
+        if (intentDirection.x > 0 && isFlipped.Value) {
+            SetFlippedServerRPC(false);
+        } else if (intentDirection.x < 0 && !isFlipped.Value) {
+            SetFlippedServerRPC(true);
+        }
+
         if (intentDirection != Vector2.zero) {
             if (!footstepSource.isPlaying) {
                 SetFootstepSoundClientRPC(true);
@@ -103,11 +116,11 @@ public class Runner : NetworkBehaviour
     }
     
     private void Move(Vector2 _move){
-        GetComponent<Rigidbody2D>().velocity = _move * mSpeed;
+        rb.velocity = _move * mSpeed;
     }
 
     private void DodgeMove(Vector2 _move) {
-        GetComponent<Rigidbody2D>().velocity = _move * dodgeSpeed;
+        rb.velocity = _move * dodgeSpeed;
 
         dodgeTimer -= Time.deltaTime;
 
@@ -123,12 +136,6 @@ public class Runner : NetworkBehaviour
         }
     }
 
-    [ServerRpc]
-    private void SpawnLureServerRPC() {
-        GameObject lureObject = Instantiate(lurePrefab, transform.position, Quaternion.identity);
-        lureObject.GetComponent<NetworkObject>().Spawn();
-    }
-
     private void CheckRadar() {
         List<Vector2> radarInfo = GameManager.Instance.GetTremorPositions(transform.position);
         if (UIManager.Instance) {
@@ -138,16 +145,6 @@ public class Runner : NetworkBehaviour
 
     public void CollectFlag() {
         CollectFlagClientRPC();
-    }
-
-    [ClientRpc]
-    private void CollectFlagClientRPC() {
-        GameObject flagSocket = transform.Find("Flag Socket").gameObject;
-        SpriteRenderer socketSprite = flagSocket.GetComponent<SpriteRenderer>();
-        socketSprite.sprite = flagPrefab.GetComponent<SpriteRenderer>().sprite;
-        if (NetworkManager.Singleton.IsHost) {
-            hasFlag.Value = true;
-        }
     }
 
     public void Eliminate() {
@@ -172,12 +169,27 @@ public class Runner : NetworkBehaviour
     }
 
     [ClientRpc]
+    private void CollectFlagClientRPC() {
+        GameObject flagSocket = transform.Find("Flag Socket").gameObject;
+        SpriteRenderer socketSprite = flagSocket.GetComponent<SpriteRenderer>();
+        socketSprite.sprite = flagPrefab.GetComponent<SpriteRenderer>().sprite;
+        if (NetworkManager.Singleton.IsHost) {
+            hasFlag.Value = true;
+        }
+    }
+
+    [ClientRpc]
     private void SetFootstepSoundClientRPC(bool active) {
         if (active) {
             footstepSource.Play();
         } else {
             footstepSource.Stop();
         }
+    }
+
+    [ServerRpc]
+    private void SetFlippedServerRPC(bool flipped) {
+        isFlipped.Value = flipped;
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -188,6 +200,13 @@ public class Runner : NetworkBehaviour
 
         Destroy(gameObject);
     }
+
+    [ServerRpc]
+    private void SpawnLureServerRPC() {
+        GameObject lureObject = Instantiate(lurePrefab, transform.position, Quaternion.identity);
+        lureObject.GetComponent<NetworkObject>().Spawn();
+    }
+
 
     // Player input
     public void OnMove(InputAction.CallbackContext context)

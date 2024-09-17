@@ -15,7 +15,7 @@ MonoBehaviour:
   m_PixelRect:
     serializedVersion: 2
     x: 0
-    y: 43
+    y: 51
     width: 2560
     height: 1357
   m_ShowMode: 4
@@ -23,7 +23,7 @@ MonoBehaviour:
   m_RootView: {fileID: 8}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
-  m_Maximized: 1
+  m_Maximized: 0
 --- !u!114 &2
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -75,7 +75,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 50}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 124
+  controlID: 70
 --- !u!114 &4
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -275,7 +275,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 100}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 160
+  controlID: 155
 --- !u!114 &12
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -295,8 +295,8 @@ MonoBehaviour:
     y: 0
     width: 1509
     height: 718
-  m_MinSize: {x: 200, y: 200}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 201, y: 221}
+  m_MaxSize: {x: 4001, y: 4021}
   m_ActualView: {fileID: 16}
   m_Panes:
   - {fileID: 16}
@@ -322,8 +322,8 @@ MonoBehaviour:
     y: 0
     width: 724
     height: 1307
-  m_MinSize: {x: 275, y: 50}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 276, y: 71}
+  m_MaxSize: {x: 4001, y: 4021}
   m_ActualView: {fileID: 22}
   m_Panes:
   - {fileID: 22}
@@ -571,7 +571,7 @@ MonoBehaviour:
   m_Pos:
     serializedVersion: 2
     x: 0
-    y: 73
+    y: 81
     width: 1508
     height: 697
   m_SerializedDataModeController:
@@ -669,7 +669,7 @@ MonoBehaviour:
   m_Pos:
     serializedVersion: 2
     x: 1509
-    y: 73
+    y: 81
     width: 325
     height: 697
   m_SerializedDataModeController:
@@ -687,7 +687,7 @@ MonoBehaviour:
       scrollPos: {x: 0, y: 0}
       m_SelectedIDs: 
       m_LastClickedID: 0
-      m_ExpandedIDs: 82c0ffffb8c0ffff3ac3ffffd0c3ffff98c4ffffbac4fffff6c6fffff2faffff
+      m_ExpandedIDs: c6e2fffffce2ffff80e5ffff16e6ffffdee6ffff00e7ffff3ce9ffff16f5fffff2faffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -732,7 +732,7 @@ MonoBehaviour:
   m_Pos:
     serializedVersion: 2
     x: 0
-    y: 791
+    y: 799
     width: 1056
     height: 568
   m_SerializedDataModeController:
@@ -789,7 +789,7 @@ MonoBehaviour:
       collapsed: 0
       displayed: 0
       snapOffset: {x: 0, y: 0}
-      snapOffsetDelta: {x: 0, y: 0}
+      snapOffsetDelta: {x: 0, y: 25}
       snapCorner: 1
       id: unity-search-toolbar
       index: 1
@@ -841,7 +841,7 @@ MonoBehaviour:
       collapsed: 0
       displayed: 0
       snapOffset: {x: 0, y: 0}
-      snapOffsetDelta: {x: 0, y: 0}
+      snapOffsetDelta: {x: 0, y: 25}
       snapCorner: 0
       id: Scene View/Light Settings
       index: 2
@@ -867,7 +867,7 @@ MonoBehaviour:
       collapsed: 0
       displayed: 0
       snapOffset: {x: 0, y: 0}
-      snapOffsetDelta: {x: 0, y: 0}
+      snapOffsetDelta: {x: 0, y: 25}
       snapCorner: 0
       id: Scene View/Cloth Constraints
       index: 3
@@ -880,7 +880,7 @@ MonoBehaviour:
       collapsed: 0
       displayed: 0
       snapOffset: {x: 0, y: 0}
-      snapOffsetDelta: {x: 0, y: 0}
+      snapOffsetDelta: {x: 0, y: 25}
       snapCorner: 0
       id: Scene View/Cloth Collisions
       index: 4
@@ -932,7 +932,7 @@ MonoBehaviour:
       collapsed: 0
       displayed: 0
       snapOffset: {x: 0, y: 0}
-      snapOffsetDelta: {x: 0, y: 0}
+      snapOffsetDelta: {x: 0, y: 25}
       snapCorner: 0
       id: Scene View/Occlusion Culling
       index: 5
@@ -945,7 +945,7 @@ MonoBehaviour:
       collapsed: 0
       displayed: 0
       snapOffset: {x: 0, y: 0}
-      snapOffsetDelta: {x: 0, y: 0}
+      snapOffsetDelta: {x: 0, y: 25}
       snapCorner: 0
       id: Scene View/Physics Debugger
       index: 6
@@ -958,7 +958,7 @@ MonoBehaviour:
       collapsed: 0
       displayed: 0
       snapOffset: {x: 0, y: 0}
-      snapOffsetDelta: {x: 0, y: 0}
+      snapOffsetDelta: {x: 0, y: 25}
       snapCorner: 0
       id: Scene View/Scene Visibility
       index: 7
@@ -971,7 +971,7 @@ MonoBehaviour:
       collapsed: 0
       displayed: 0
       snapOffset: {x: 0, y: 0}
-      snapOffsetDelta: {x: 0, y: 0}
+      snapOffsetDelta: {x: 0, y: 25}
       snapCorner: 0
       id: Scene View/Particles
       index: 8
@@ -1034,7 +1034,7 @@ MonoBehaviour:
       containerId: overlay-container--right
       floating: 0
       collapsed: 0
-      displayed: 1
+      displayed: 0
       snapOffset: {x: 48, y: 48}
       snapOffsetDelta: {x: 0, y: 0}
       snapCorner: 0
@@ -1093,9 +1093,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 20.745106, y: -11.548531, z: -0.0044838293}
+    m_Target: {x: 26.430956, y: -9.668488, z: 0.072849326}
     speed: 2
-    m_Value: {x: 20.745106, y: -11.548531, z: -0.0044838293}
+    m_Value: {x: 26.430956, y: -9.668488, z: 0.072849326}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -1145,9 +1145,9 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0, y: 0, z: 0, w: 1}
   m_Size:
-    m_Target: 14.887065
+    m_Target: 8.91396
     speed: 2
-    m_Value: 14.887065
+    m_Value: 8.91396
   m_Ortho:
     m_Target: 1
     speed: 2
@@ -1263,7 +1263,7 @@ MonoBehaviour:
   m_Pos:
     serializedVersion: 2
     x: 0
-    y: 791
+    y: 799
     width: 1056
     height: 568
   m_SerializedDataModeController:
@@ -1302,9 +1302,9 @@ MonoBehaviour:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: c8890000
-    m_LastClickedID: 35272
-    m_ExpandedIDs: 000000009c8900009e890000a0890000a4890000
+    m_SelectedIDs: e0890000
+    m_LastClickedID: 35296
+    m_ExpandedIDs: 00000000c4890000c6890000c8890000ca890000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1332,7 +1332,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 000000009c8900009e890000a0890000a2890000a4890000
+    m_ExpandedIDs: 00000000c4890000c6890000c8890000ca890000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1409,7 +1409,7 @@ MonoBehaviour:
   m_Pos:
     serializedVersion: 2
     x: 1057
-    y: 791
+    y: 799
     width: 777
     height: 568
   m_SerializedDataModeController:
@@ -1443,7 +1443,7 @@ MonoBehaviour:
   m_Pos:
     serializedVersion: 2
     x: 1836
-    y: 73
+    y: 81
     width: 723
     height: 1286
   m_SerializedDataModeController:
