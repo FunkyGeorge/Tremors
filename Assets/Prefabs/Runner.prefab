@@ -17,6 +17,8 @@ GameObject:
   - component: {fileID: 1824720144780957484}
   - component: {fileID: 1829876235909603558}
   - component: {fileID: 7294367346643129163}
+  - component: {fileID: -354073418489788219}
+  - component: {fileID: 7241402995170792435}
   m_Layer: 6
   m_Name: Runner
   m_TagString: Player
@@ -54,6 +56,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hasFlag:
+    m_InternalValue: 0
+  isFlipped:
     m_InternalValue: 0
   flagPrefab: {fileID: 5141177332172640192, guid: 0023373f3ece91c4f8aab1ab62965b33, type: 3}
   abilityUIPrefab: {fileID: 2111248157713116813, guid: 4d079b4cee26f3042bb101222663808a, type: 3}
@@ -106,7 +110,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 5
-  m_Sprite: {fileID: 21300000, guid: e6f7aa21af28ddc4e936bafd0b0170ec, type: 3}
+  m_Sprite: {fileID: -376962404, guid: a518bcbd328c93e4fbfcf9b18b805419, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -318,6 +322,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80d7c879794dfda4687da0e400131852, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!95 &-354073418489788219
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2090411196480602321}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 797c4f6a36fae014f8d1670de92529bd, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &7241402995170792435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2090411196480602321}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8013300278ff5a408878056d5988b7b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TransitionStateInfoList: []
+  m_Animator: {fileID: -354073418489788219}
 --- !u!1 &3229534555323191040
 GameObject:
   m_ObjectHideFlags: 0

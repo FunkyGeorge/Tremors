@@ -14,6 +14,7 @@ public class Runner : NetworkBehaviour
 
     private Rigidbody2D rb;
     private SpriteRenderer sr;
+    private Animator anim;
     private Vector2 intentDirection = Vector2.zero;
     private const string V_CAM_NAME = "Virtual Camera";
 
@@ -50,6 +51,7 @@ public class Runner : NetworkBehaviour
         LobbyManager.Instance.OnJoinedLobbyUpdate += UpdateLobby_Event;
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
+        anim = GetComponent<Animator>();
 
         if (IsOwner) {
             // Set follow camera
@@ -94,11 +96,15 @@ public class Runner : NetworkBehaviour
                 break;
         }
 
+        // Set Animation parameters
         if (intentDirection.x > 0 && isFlipped.Value) {
             SetFlippedServerRPC(false);
         } else if (intentDirection.x < 0 && !isFlipped.Value) {
             SetFlippedServerRPC(true);
         }
+
+        anim.SetBool("isDashing", currentState == MoveState.Dodging);
+        anim.SetFloat("speed", intentDirection.magnitude);
 
         if (intentDirection != Vector2.zero) {
             if (!footstepSource.isPlaying) {
