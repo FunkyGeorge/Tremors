@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,13 +9,13 @@ public class LobbyCreateUI : MonoBehaviour {
 
 
     [SerializeField] private Button createButton;
+    [SerializeField] private Button cancelButton;
     [SerializeField] private Button lobbyNameButton;
     [SerializeField] private Button publicPrivateButton;
     [SerializeField] private Button maxPlayersButton;
     [SerializeField] private TextMeshProUGUI lobbyNameText;
     [SerializeField] private TextMeshProUGUI publicPrivateText;
     [SerializeField] private TextMeshProUGUI maxPlayersText;
-    [SerializeField] private TextMeshProUGUI gameModeText;
 
 
     private string lobbyName;
@@ -33,6 +31,10 @@ public class LobbyCreateUI : MonoBehaviour {
                 maxPlayers,
                 isPrivate
             );
+            Hide();
+        });
+
+        cancelButton.onClick.AddListener(() => {
             Hide();
         });
 
