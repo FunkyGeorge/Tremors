@@ -3413,6 +3413,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ced7941f30bd4a348bafefa6dabe772d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gConfig: {fileID: 11400000, guid: fb077916496ef854e815e81195a5c01a, type: 2}
   timerText: {fileID: 1511878325}
   radarIcons:
   - {fileID: 465401970}

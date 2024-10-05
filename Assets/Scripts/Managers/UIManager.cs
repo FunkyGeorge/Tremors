@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+    [SerializeField] private GlobalConfigSO gConfig;
     [SerializeField] private TMP_Text timerText;
     [SerializeField] private List<GameObject> radarIcons;
     [SerializeField] private Color radarColor;
@@ -29,7 +30,9 @@ public class UIManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        if (gConfig.hideUI) {
+            GetComponent<Canvas>().enabled = false;
+        }
     }
 
     // Update is called once per frame

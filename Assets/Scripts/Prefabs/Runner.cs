@@ -9,7 +9,7 @@ using UnityEngine.InputSystem;
 
 public class Runner : NetworkBehaviour
 {
-    public NetworkVariable<bool> hasFlag = new NetworkVariable<bool>(false);
+    public NetworkVariable<bool> hasKey = new NetworkVariable<bool>(false);
     public NetworkVariable<bool> isFlipped = new NetworkVariable<bool>(false);
 
     private Rigidbody2D rb;
@@ -18,7 +18,7 @@ public class Runner : NetworkBehaviour
     private Vector2 intentDirection = Vector2.zero;
     private const string V_CAM_NAME = "Virtual Camera";
 
-    [SerializeField] private GameObject flagPrefab;
+    [SerializeField] private GameObject keyPrefab;
     [SerializeField] private GameObject abilityUIPrefab;
     [SerializeField] private GameObject ghostPrefab;
 
@@ -27,6 +27,7 @@ public class Runner : NetworkBehaviour
     [SerializeField] private float dodgeSpeed = 200;
     [SerializeField] private float dodgeTime = 0.5f;
     [SerializeField] private float dodgeCooldown = 5f;
+    [SerializeField] private float keySpeedPenalty = 1f;
     private float dodgeCooldownTimer = 0;
     private float dodgeTimer = 0;
 
@@ -122,7 +123,11 @@ public class Runner : NetworkBehaviour
     }
     
     private void Move(Vector2 _move){
-        rb.velocity = _move * mSpeed;
+        float currentSpeed = mSpeed;
+        if (hasKey.Value) {
+            currentSpeed -= keySpeedPenalty;
+        }
+        rb.velocity = _move * currentSpeed;
     }
 
     private void DodgeMove(Vector2 _move) {
@@ -149,8 +154,8 @@ public class Runner : NetworkBehaviour
         }
     }
 
-    public void CollectFlag() {
-        CollectFlagClientRPC();
+    public void CollectKey() {
+        CollectKeyClientRPC();
     }
 
     public void Eliminate() {
@@ -175,12 +180,12 @@ public class Runner : NetworkBehaviour
     }
 
     [ClientRpc]
-    private void CollectFlagClientRPC() {
-        GameObject flagSocket = transform.Find("Flag Socket").gameObject;
-        SpriteRenderer socketSprite = flagSocket.GetComponent<SpriteRenderer>();
-        socketSprite.sprite = flagPrefab.GetComponent<SpriteRenderer>().sprite;
+    private void CollectKeyClientRPC() {
+        GameObject keySocket = transform.Find("Key Socket").gameObject;
+        SpriteRenderer socketSprite = keySocket.GetComponent<SpriteRenderer>();
+        socketSprite.sprite = keyPrefab.GetComponent<SpriteRenderer>().sprite;
         if (NetworkManager.Singleton.IsHost) {
-            hasFlag.Value = true;
+            hasKey.Value = true;
         }
     }
 
