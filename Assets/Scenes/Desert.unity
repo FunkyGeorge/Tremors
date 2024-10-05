@@ -3635,7 +3635,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5.5
+  orthographic size: 7.5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -45137,7 +45137,7 @@ MonoBehaviour:
   m_Follow: {fileID: 0}
   m_Lens:
     FieldOfView: 60
-    OrthographicSize: 5.5
+    OrthographicSize: 7.5
     NearClipPlane: 0
     FarClipPlane: 1000
     Dutch: 0
@@ -62998,7 +62998,7 @@ PrefabInstance:
       objectReference: {fileID: 2090411196480602321, guid: 8a00df3bbd21f0c47bac477545bcf92a, type: 3}
     - target: {fileID: 5024753748812613069, guid: a01623261d9d4bd43b707a1041795c54, type: 3}
       propertyPath: debugStartingTeam
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5024753748812613069, guid: a01623261d9d4bd43b707a1041795c54, type: 3}
       propertyPath: runnerSpawns.Array.data[0]

@@ -52,6 +52,7 @@ public class Tremor : NetworkBehaviour
             GameObject vCam = GameObject.Find(V_CAM_NAME);
             CinemachineVirtualCamera vCamComponent = vCam.GetComponent<CinemachineVirtualCamera>();
             vCamComponent.Follow = transform;
+            vCamComponent.m_Lens.OrthographicSize = 7.5f;
 
 
             // Create ability UI Widget

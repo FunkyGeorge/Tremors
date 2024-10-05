@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27324314ab6cf224c95b29dd1c72d263, type: 3}
   m_Name: GlobalConfig
   m_EditorClassIdentifier: 
-  hideUI: 1
+  hideUI: 0
