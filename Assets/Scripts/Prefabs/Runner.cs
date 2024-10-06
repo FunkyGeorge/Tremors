@@ -84,6 +84,14 @@ public class Runner : NetworkBehaviour
         LobbyManager.Instance.OnJoinedLobbyUpdate -= UpdateLobby_Event;
         GameManager.Instance.CheckActiveRunners();
     }
+
+    void OnTriggerEnter2D(Collider2D collider) {
+        onHighGround = true;
+    }
+
+    void OnTriggerExit2D(Collider2D collider) {
+        onHighGround = false;
+    }
     
     private void Move(Vector2 _move){
         float currentSpeed = mSpeed;
@@ -117,7 +125,7 @@ public class Runner : NetworkBehaviour
                 break;
         }
 
-        bool shouldBeTrackable = intentDirection != Vector2.zero;
+        bool shouldBeTrackable = intentDirection != Vector2.zero && !onHighGround;
 
         if (shouldBeTrackable != trackable) {
             GameManager.Instance.HandleTracked(gameObject);
