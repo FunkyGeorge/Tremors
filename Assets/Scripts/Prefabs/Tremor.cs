@@ -64,8 +64,25 @@ public class Tremor : NetworkBehaviour
     void Update()
     {
         if (IsOwner) {
-            // What kind of movement?
-            switch (currentState) {
+            CheckMovement();
+            CheckSlitherVolume();
+            CheckCooldowns();
+            RunnerScan();
+        }
+    }
+
+    void OnCollisionEnter2D(Collision2D collision) {
+        if (collision.gameObject.tag == "Player") {
+            collision.gameObject.GetComponent<Runner>().Eliminate();
+            PlayChompSoundClientRPC();
+        } else {
+            currentState = MoveState.Stunned;
+            stunnedTimer = 0.3f;
+        }
+    }
+
+    private void CheckMovement() {
+        switch (currentState) {
                 case MoveState.Charge:
                     currentSpeed = chargeSpeed;
                     RotateBody(intentDirection, rotationSpeed * 2);
@@ -89,7 +106,6 @@ public class Tremor : NetworkBehaviour
                     Move(intentDirection);
                     break;
                 case MoveState.Lured:
-                    Debug.Log("Lured");
                     Vector2 luredVector = lureTarget - new Vector2(transform.position.x, transform.position.y);
                     luredVector.Normalize();
                     RotateBody(luredVector, rotationSpeed * 0.5f);
@@ -111,39 +127,27 @@ public class Tremor : NetworkBehaviour
                     Move(intentDirection);
                     break;
             }
+    }
 
-            // Set slither volumes over network
-            switch (currentState) {
-                case MoveState.Charge:
-                    SetSlitherVolumeClientRPC(0.15f);
-                    break;
-                case MoveState.Normal:
-                case MoveState.Coast:
-                    SetSlitherVolumeClientRPC(0.06f);
-                    break;
-                default:
-                    SetSlitherVolumeClientRPC(0.06f);
-                    break;
-            }
-
-            if (scanCooldownTimer > 0) {
-                scanCooldownTimer -= Time.deltaTime;
-                UIManager.Instance.RefreshUniqueOnWidget(scanCooldownTimer/scanCooldown);
-            }
-
-            if (scanTimer > 0) {
-                RunnerScan();
-            }
+    private void CheckCooldowns() {
+        if (scanCooldownTimer > 0) {
+            scanCooldownTimer -= Time.deltaTime;
+            UIManager.Instance.RefreshUniqueOnWidget(scanCooldownTimer/scanCooldown);
         }
     }
 
-    void OnCollisionEnter2D(Collision2D collision) {
-        if (collision.gameObject.tag == "Player") {
-            collision.gameObject.GetComponent<Runner>().Eliminate();
-            PlayChompSoundClientRPC();
-        } else {
-            currentState = MoveState.Stunned;
-            stunnedTimer = 0.3f;
+    private void CheckSlitherVolume() {
+        switch (currentState) {
+            case MoveState.Charge:
+                SetSlitherVolumeClientRPC(0.15f);
+                break;
+            case MoveState.Normal:
+            case MoveState.Coast:
+                SetSlitherVolumeClientRPC(0.06f);
+                break;
+            default:
+                SetSlitherVolumeClientRPC(0.06f);
+                break;
         }
     }
 
@@ -165,14 +169,18 @@ public class Tremor : NetworkBehaviour
         rb.velocity = rb.transform.up * normalSpeed;
     }
 
-    private void StartRunnerScan() {
-        scanTimer = scanDuration;
-    }
-
     private void RunnerScan() {
-        scanTimer -= Time.deltaTime;
         List<Vector2> runnerPositions = GameManager.Instance.GetRunnerPositions();
-        UIManager.Instance.RefreshRadar(transform.position, runnerPositions, scanTimer);
+        // Filter out positions too close
+        float minRadarDistance = 8f;
+        List<Vector2> filteredPositions = new List<Vector2>();
+        foreach (Vector2 runnerPos in runnerPositions) {
+            if (Vector2.Distance(runnerPos, gameObject.transform.position) > minRadarDistance) {
+                filteredPositions.Add(runnerPos);
+            }
+        }
+
+        UIManager.Instance.RefreshRadar(transform.position, filteredPositions, 50f);
     }
 
     public void SetLure(Vector2 lure) {
@@ -239,10 +247,11 @@ public class Tremor : NetworkBehaviour
     public void OnSkill(InputAction.CallbackContext context) {
         if (!IsOwner) { return; }
         if (context.performed) {
-            if (scanCooldownTimer <= 0) {
-                scanCooldownTimer = scanCooldown;
-                StartRunnerScan();
-            }
+            // Deprecated, moving scan to always be on and add a new ability here
+            // if (scanCooldownTimer <= 0) {
+            //     scanCooldownTimer = scanCooldown;
+            //     StartRunnerScan();
+            // }
         }
 
         if (context.started) {

@@ -14,6 +14,8 @@ public class GameManager : NetworkBehaviour
 {
     public event EventHandler<int> OnSurvivorsUpdated;
     private List<Transform> tremors = new List<Transform>();
+    private NetworkList<NetworkObjectReference> trackedNOs;
+    private List<Vector2> runnerPositions = new List<Vector2>();
 
     [Header("Config")]
     [SerializeField] private float gameTimeLimit = 5 * 60;
@@ -34,6 +36,8 @@ public class GameManager : NetworkBehaviour
     {
         if (_instance == null) _instance = this;
         else Destroy(gameObject);
+
+        trackedNOs = new NetworkList<NetworkObjectReference>();
     }
 
     public override void OnNetworkSpawn()
@@ -57,6 +61,8 @@ public class GameManager : NetworkBehaviour
     }
 
     void Update() {
+        CalculateRunnerPositions();
+
         if (gameTimeRemaining >= 0) {
             gameTimeRemaining -= Time.deltaTime;
             UIManager.Instance.RefreshGameTimer(gameTimeRemaining);
@@ -176,13 +182,36 @@ public class GameManager : NetworkBehaviour
     }
 
     public List<Vector2> GetRunnerPositions() {
-        List<Vector2> runnerPositions = new List<Vector2>();
-
-        foreach(GameObject runnerGO in GameObject.FindGameObjectsWithTag("Player")) {
-            runnerPositions.Add(runnerGO.transform.position);
-        }
-
         return runnerPositions;
+    }
+
+    private void CalculateRunnerPositions() {
+        runnerPositions.Clear();
+        foreach(NetworkObjectReference NORef in trackedNOs) {
+            if (NORef.TryGet(out NetworkObject trackedNO)) {
+                runnerPositions.Add(trackedNO.transform.position);
+            } else {
+                Debug.Log("Tracked Object not found");
+            }
+        }
+    }
+
+    public void HandleTracked(GameObject NO) {
+        if (trackedNOs.Contains(NO)) {
+            RemoveTrackedObjectServerRPC(NO);
+        } else {
+            AddTrackedObjectServerRPC(NO);
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void AddTrackedObjectServerRPC(NetworkObjectReference trackedRef) {
+        trackedNOs.Add(trackedRef);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void RemoveTrackedObjectServerRPC(NetworkObjectReference trackedRef) {
+        trackedNOs.Remove(trackedRef);
     }
 
     void ProceedToPostGame()

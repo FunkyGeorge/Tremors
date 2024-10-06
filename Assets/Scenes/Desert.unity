@@ -62998,7 +62998,7 @@ PrefabInstance:
       objectReference: {fileID: 2090411196480602321, guid: 8a00df3bbd21f0c47bac477545bcf92a, type: 3}
     - target: {fileID: 5024753748812613069, guid: a01623261d9d4bd43b707a1041795c54, type: 3}
       propertyPath: debugStartingTeam
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5024753748812613069, guid: a01623261d9d4bd43b707a1041795c54, type: 3}
       propertyPath: runnerSpawns.Array.data[0]

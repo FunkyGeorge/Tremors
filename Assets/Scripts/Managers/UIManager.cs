@@ -45,7 +45,7 @@ public class UIManager : MonoBehaviour
         abilityWidget = widgetObject.GetComponent<AbilityWidget>();
     }
 
-    public void RefreshRadar(Vector3 playerPosition, List<Vector2> trackedPositions) {
+    public void RefreshRadar(Vector3 playerPosition, List<Vector2> trackedPositions, float maxDistance) {
         for (int i = 0; i < radarIcons.Count; i++) {
             if (i < trackedPositions.Count) {
                 radarIcons[i].SetActive(true);
@@ -58,27 +58,7 @@ public class UIManager : MonoBehaviour
                 Color vibrantColor = radarColor;
                 vibrantColor.a = 1f;
                 fadedColor.a = 0.3f;
-                float lerpAlpha = 1 - Vector2.Distance(trackedPositions[i], playerPosition) / 13f;
-                radarImage.color = Color.Lerp(fadedColor, vibrantColor, lerpAlpha);
-            } else {
-                radarIcons[i].SetActive(false);
-            }
-        }
-    }
-
-    public void RefreshRadar(Vector3 playerPosition, List<Vector2> trackedPositions, float lerpAlpha) {
-        for (int i = 0; i < radarIcons.Count; i++) {
-            if (i < trackedPositions.Count) {
-                radarIcons[i].SetActive(true);
-                Quaternion newAngle = Quaternion.Euler(0, 0, Vector2.SignedAngle(Vector2.up, trackedPositions[i] - new Vector2(playerPosition.x, playerPosition.y)));
-                radarIcons[i].GetComponent<RectTransform>().rotation = newAngle;
-                
-                // Set Color intensity for radar icon
-                Image radarImage = radarIcons[i].transform.GetComponentInChildren<Image>();
-                Color fadedColor = radarColor;
-                Color vibrantColor = radarColor;
-                vibrantColor.a = 1f;
-                fadedColor.a = 0;
+                float lerpAlpha = 1 - Vector2.Distance(trackedPositions[i], playerPosition) / maxDistance;
                 radarImage.color = Color.Lerp(fadedColor, vibrantColor, lerpAlpha);
             } else {
                 radarIcons[i].SetActive(false);

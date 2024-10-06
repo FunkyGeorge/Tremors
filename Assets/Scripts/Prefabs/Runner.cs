@@ -29,6 +29,8 @@ public class Runner : NetworkBehaviour
     [SerializeField] private float keySpeedPenalty = 1f;
     private float dodgeCooldownTimer = 0;
     private float dodgeTimer = 0;
+    private bool trackable = false;
+    private bool onHighGround = false;
 
     [Header("Skill")]
     [SerializeField] private GameObject lurePrefab;
@@ -71,48 +73,10 @@ public class Runner : NetworkBehaviour
 
         if (!IsOwner) { return; }
 
-        if (dodgeCooldownTimer >= 0) {
-            dodgeCooldownTimer -= Time.deltaTime;
-            UIManager.Instance.RefreshMovementOnWidget(dodgeCooldownTimer/dodgeCooldown);
-        }
-
-        if (skillCooldownTimer >= 0) {
-            skillCooldownTimer -= Time.deltaTime;
-            UIManager.Instance.RefreshUniqueOnWidget(skillCooldownTimer/skillCooldown);
-        }
-
+        CheckCooldowns();
         CheckRadar();
-
-        // Which kind of movement?
-        switch(currentState) {
-            default:
-                Move(intentDirection);
-                break;
-            case MoveState.Normal:
-                Move(intentDirection);
-                break;
-            case MoveState.Dodging:
-                DodgeMove(intentDirection);
-                break;
-        }
-
-        // Set Animation parameters
-        if (intentDirection.x > 0 && isFlipped.Value) {
-            SetFlippedServerRPC(false);
-        } else if (intentDirection.x < 0 && !isFlipped.Value) {
-            SetFlippedServerRPC(true);
-        }
-
-        anim.SetBool("isDashing", currentState == MoveState.Dodging);
-        anim.SetFloat("speed", intentDirection.magnitude);
-
-        if (intentDirection != Vector2.zero) {
-            if (!footstepSource.isPlaying) {
-                SetFootstepSoundClientRPC(true);
-            }
-        } else {
-            SetFootstepSoundClientRPC(false);
-        }
+        CheckMovement();
+        Animate();
     }
 
     public override void OnDestroy()
@@ -127,6 +91,58 @@ public class Runner : NetworkBehaviour
             currentSpeed -= keySpeedPenalty;
         }
         rb.velocity = _move * currentSpeed;
+    }
+
+    private void Animate() {
+        if (intentDirection.x > 0 && isFlipped.Value) {
+            SetFlippedServerRPC(false);
+        } else if (intentDirection.x < 0 && !isFlipped.Value) {
+            SetFlippedServerRPC(true);
+        }
+
+        anim.SetBool("isDashing", currentState == MoveState.Dodging);
+        anim.SetFloat("speed", intentDirection.magnitude);
+    }
+
+    private void CheckMovement() {
+        switch(currentState) {
+            default:
+                Move(intentDirection);
+                break;
+            case MoveState.Normal:
+                Move(intentDirection);
+                break;
+            case MoveState.Dodging:
+                DodgeMove(intentDirection);
+                break;
+        }
+
+        bool shouldBeTrackable = intentDirection != Vector2.zero;
+
+        if (shouldBeTrackable != trackable) {
+            GameManager.Instance.HandleTracked(gameObject);
+            trackable = shouldBeTrackable;
+        }
+        
+        if (intentDirection != Vector2.zero) {
+            if (!footstepSource.isPlaying) {
+                SetFootstepSoundClientRPC(true);
+            }
+        } else {
+            SetFootstepSoundClientRPC(false);
+        }
+    }
+
+    private void CheckCooldowns() {
+        if (dodgeCooldownTimer >= 0) {
+            dodgeCooldownTimer -= Time.deltaTime;
+            UIManager.Instance.RefreshMovementOnWidget(dodgeCooldownTimer/dodgeCooldown);
+        }
+
+        if (skillCooldownTimer >= 0) {
+            skillCooldownTimer -= Time.deltaTime;
+            UIManager.Instance.RefreshUniqueOnWidget(skillCooldownTimer/skillCooldown);
+        }
     }
 
     private void DodgeMove(Vector2 _move) {
@@ -149,7 +165,7 @@ public class Runner : NetworkBehaviour
     private void CheckRadar() {
         List<Vector2> radarInfo = GameManager.Instance.GetTremorPositions(transform.position);
         if (UIManager.Instance) {
-            UIManager.Instance.RefreshRadar(transform.position, radarInfo);
+            UIManager.Instance.RefreshRadar(transform.position, radarInfo, 13f);
         }
     }
 
