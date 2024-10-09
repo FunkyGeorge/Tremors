@@ -19,6 +19,7 @@ public class Runner : NetworkBehaviour
 
     [SerializeField] private GameObject keyPrefab;
     [SerializeField] private GameObject abilityUIPrefab;
+    [SerializeField] private GameObject objectiveUIPrefab;
     [SerializeField] private GameObject ghostPrefab;
 
     [Header("Movement")]
@@ -63,6 +64,7 @@ public class Runner : NetworkBehaviour
 
             // Create ability UI Widget
             UIManager.Instance.SetAbilityWidget(abilityUIPrefab);
+            UIManager.Instance.SetObjectiveWidget(objectiveUIPrefab);
         }
     }
 

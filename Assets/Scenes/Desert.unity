@@ -3381,6 +3381,7 @@ RectTransform:
   - {fileID: 1254205070}
   - {fileID: 1730333249}
   - {fileID: 1511878324}
+  - {fileID: 1096705610}
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3427,6 +3428,7 @@ MonoBehaviour:
   - {fileID: 166025810}
   radarColor: {r: 0.5019608, g: 0, b: 0, a: 0}
   abilityWidgetSocket: {fileID: 1730333248}
+  objectiveWidgetSocket: {fileID: 1096705609}
 --- !u!1001 &451697252
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9483,6 +9485,42 @@ Transform:
   m_Father: {fileID: 371612066}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1096705609
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1096705610}
+  m_Layer: 5
+  m_Name: Objective Widget Socket
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1096705610
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1096705609}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 407784328}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 1, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchoredPosition: {x: -229.76141, y: 142.65166}
+  m_SizeDelta: {x: 323.3628, y: 285.2953}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &1112744995
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -65768,7 +65806,7 @@ PrefabInstance:
       objectReference: {fileID: 2090411196480602321, guid: 8a00df3bbd21f0c47bac477545bcf92a, type: 3}
     - target: {fileID: 5024753748812613069, guid: a01623261d9d4bd43b707a1041795c54, type: 3}
       propertyPath: debugStartingTeam
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5024753748812613069, guid: a01623261d9d4bd43b707a1041795c54, type: 3}
       propertyPath: runnerSpawns.Array.data[0]

@@ -133,6 +133,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   abilityUIPrefab: {fileID: 5872636657394436848, guid: f611f6192b868084b9019d3b84ed1091, type: 3}
+  objectiveUIPrefab: {fileID: 6526518677988312139, guid: f57dfde7e7663894f8e0c2e7a930a2d1, type: 3}
   scanCooldown: 10
   scanDuration: 5
   chargeCooldown: 2.5

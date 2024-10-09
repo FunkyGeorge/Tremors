@@ -11,6 +11,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private List<GameObject> radarIcons;
     [SerializeField] private Color radarColor;
     [SerializeField] private GameObject abilityWidgetSocket;
+    [SerializeField] private GameObject objectiveWidgetSocket;
     private AbilityWidget abilityWidget;
 
     private static UIManager _instance;
@@ -43,6 +44,10 @@ public class UIManager : MonoBehaviour
     public void SetAbilityWidget(GameObject widgetPrefab) {
         GameObject widgetObject = Instantiate(widgetPrefab, abilityWidgetSocket.transform, false);
         abilityWidget = widgetObject.GetComponent<AbilityWidget>();
+    }
+
+    public void SetObjectiveWidget(GameObject widgetPrefab) {
+        Instantiate(widgetPrefab, objectiveWidgetSocket.transform, false);
     }
 
     public void RefreshRadar(Vector3 playerPosition, List<Vector2> trackedPositions, float maxDistance) {

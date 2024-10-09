@@ -11,6 +11,7 @@ public class Tremor : NetworkBehaviour
     private const string V_CAM_NAME = "Virtual Camera";
 
     [SerializeField] private GameObject abilityUIPrefab;
+    [SerializeField] private GameObject objectiveUIPrefab;
 
     [Header("Ability")]
     [SerializeField] private float scanCooldown = 10f;
@@ -57,6 +58,7 @@ public class Tremor : NetworkBehaviour
 
             // Create ability UI Widget
             UIManager.Instance.SetAbilityWidget(abilityUIPrefab);
+            UIManager.Instance.SetObjectiveWidget(objectiveUIPrefab);
         }
     }
 

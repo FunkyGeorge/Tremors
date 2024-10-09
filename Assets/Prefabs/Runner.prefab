@@ -55,12 +55,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65746d23118d1c3469a52d2f3baafacb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hasFlag:
+  hasKey:
     m_InternalValue: 0
   isFlipped:
     m_InternalValue: 0
   keyPrefab: {fileID: 5141177332172640192, guid: 0023373f3ece91c4f8aab1ab62965b33, type: 3}
   abilityUIPrefab: {fileID: 2111248157713116813, guid: 4d079b4cee26f3042bb101222663808a, type: 3}
+  objectiveUIPrefab: {fileID: 6526518677988312139, guid: 47b0dcd39a012e041b7c4acc63ba4272, type: 3}
   ghostPrefab: {fileID: 8575843575439218631, guid: 91f9d01100ca15d4bab08f56b6c1d8fb, type: 3}
   mSpeed: 4
   dodgeSpeed: 14
