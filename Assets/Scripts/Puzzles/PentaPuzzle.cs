@@ -18,9 +18,18 @@ public class PentaPuzzle : MonoBehaviour
     void Start()
     {
         serial = GameManager.Instance.RegisterPuzzle(gameObject);
-        for (int i = 0; i < nodes.Count; i++) {
-            nodes[i].SetIndex(i);
-            nodes[i].gameObject.SetActive(false);
+
+        // Randomize starting state
+        int randomStart = Random.Range(0, nodes.Count);
+        for (int i = 0 + randomStart; i < nodes.Count + randomStart; i++) {
+            int index = i % nodes.Count;
+            bool lucky = Random.value > 0.5;
+            if (index == randomStart | lucky) {
+                nodes[index].Toggle();
+            }
+
+            nodes[index].SetIndex(index);
+            nodes[index].gameObject.SetActive(false);
         }
     }
 
