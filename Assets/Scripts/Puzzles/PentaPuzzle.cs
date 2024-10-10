@@ -13,9 +13,11 @@ public class PentaPuzzle : MonoBehaviour
     [SerializeField] private Sprite luckySprite;
     [SerializeField] private List<PuzzleNode> nodes = new List<PuzzleNode>();
     private PuzzleState state = PuzzleState.Waiting;
+    public int serial = -1;
     // Start is called before the first frame update
     void Start()
     {
+        serial = GameManager.Instance.RegisterPuzzle(gameObject);
         for (int i = 0; i < nodes.Count; i++) {
             nodes[i].SetIndex(i);
             nodes[i].gameObject.SetActive(false);
@@ -54,7 +56,16 @@ public class PentaPuzzle : MonoBehaviour
         }
     }
 
-    public void SetSolved() {
+    private void SetSolved() {
+        state = PuzzleState.Solved;
+        for (int i = 0; i < nodes.Count; i++) {
+            nodes[i].gameObject.SetActive(false);
+        }
+        GetComponent<SpriteRenderer>().sprite = unluckySprite;
+        GameManager.Instance.CheckCompletePuzzle(serial);
+    }
+
+    public void SetComplete() {
         state = PuzzleState.Solved;
         for (int i = 0; i < nodes.Count; i++) {
             nodes[i].gameObject.SetActive(false);

@@ -17,6 +17,12 @@ public class GameManager : NetworkBehaviour
     private NetworkList<NetworkObjectReference> trackedNOs;
     private List<Vector2> runnerPositions = new List<Vector2>();
 
+    // Puzzle Stuff
+    [Header("Puzzle Management")]
+    [SerializeField] private GameObject keyJar;
+    private int winningPuzzleSerial = -1;
+    private List<PentaPuzzle> activePuzzles = new List<PentaPuzzle>();
+
     [Header("Config")]
     [SerializeField] private float gameTimeLimit = 5 * 60;
     private float gameTimeRemaining = -1f;
@@ -212,6 +218,25 @@ public class GameManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void RemoveTrackedObjectServerRPC(NetworkObjectReference trackedRef) {
         trackedNOs.Remove(trackedRef);
+    }
+
+    public int RegisterPuzzle(GameObject puzzle) {
+        activePuzzles.Add(puzzle.GetComponent<PentaPuzzle>());
+        winningPuzzleSerial = UnityEngine.Random.Range(0, activePuzzles.Count);
+        return activePuzzles.Count - 1;
+    }
+
+    public void CheckCompletePuzzle(int serial) {
+        if (serial == winningPuzzleSerial) {
+            SetGamePuzzlesToComplete();
+        }
+    }
+
+    public void SetGamePuzzlesToComplete() {
+        foreach (PentaPuzzle puzzle in activePuzzles) {
+            puzzle.SetComplete();
+        }
+        Destroy(keyJar);
     }
 
     void ProceedToPostGame()
