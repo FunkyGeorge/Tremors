@@ -6,7 +6,6 @@ using UnityEngine;
 public class PuzzleNode : MonoBehaviour
 {
     public bool active = false;
-    public event EventHandler OnToggle;
     [SerializeField] private Color activeColor;
     [SerializeField] private Color inactiveColor;
     private PentaPuzzle parentPuzzle;

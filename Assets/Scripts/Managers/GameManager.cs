@@ -20,7 +20,7 @@ public class GameManager : NetworkBehaviour
     // Puzzle Stuff
     [Header("Puzzle Management")]
     [SerializeField] private GameObject keyJar;
-    private int winningPuzzleSerial = -1;
+    public NetworkVariable<int> winningPuzzleSerial = new NetworkVariable<int>(-1);
     private List<PentaPuzzle> activePuzzles = new List<PentaPuzzle>();
 
     [Header("Config")]
@@ -87,6 +87,9 @@ public class GameManager : NetworkBehaviour
     private void OnClientConnected(ulong clientId) {
         Lobby joinedLobby = LobbyManager.Instance.GetJoinedLobby();
         if (NetworkManager.Singleton.ConnectedClientsIds.Count == joinedLobby.Players.Count) {
+            if (IsServer) {
+                RollNewWinningSNServerRPC();
+            }
             InitializeGameTimeClientRPC(gameTimeLimit);
             NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
         }
@@ -220,19 +223,34 @@ public class GameManager : NetworkBehaviour
         trackedNOs.Remove(trackedRef);
     }
 
-    public int RegisterPuzzle(GameObject puzzle) {
-        activePuzzles.Add(puzzle.GetComponent<PentaPuzzle>());
-        winningPuzzleSerial = UnityEngine.Random.Range(0, activePuzzles.Count);
-        return activePuzzles.Count - 1;
+    public int RegisterPuzzle(NetworkObjectReference puzzleRef) {
+        int serial = activePuzzles.Count;
+        RegisterPuzzleClientRPC(puzzleRef);
+        return serial;
     }
 
-    public void CheckCompletePuzzle(int serial) {
-        if (serial == winningPuzzleSerial) {
-            SetGamePuzzlesToComplete();
+    [ClientRpc]
+    private void RegisterPuzzleClientRPC(NetworkObjectReference puzzleRef) {
+        if (puzzleRef.TryGet(out NetworkObject puzzle)) {
+            activePuzzles.Add(puzzle.gameObject.GetComponent<PentaPuzzle>());
+        } else {
+            Debug.Log("Could not get puzzle");
         }
     }
 
-    public void SetGamePuzzlesToComplete() {
+    [ServerRpc]
+    private void RollNewWinningSNServerRPC() {
+        winningPuzzleSerial.Value = UnityEngine.Random.Range(0, activePuzzles.Count);
+    }
+
+    public void CheckCompletePuzzle(int serial) {
+        if (serial == winningPuzzleSerial.Value) {
+            SetGamePuzzlesToCompleteClientRPC();
+        }
+    }
+
+    [ClientRpc]
+    private void SetGamePuzzlesToCompleteClientRPC() {
         foreach (PentaPuzzle puzzle in activePuzzles) {
             puzzle.SetComplete();
         }
