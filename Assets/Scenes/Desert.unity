@@ -3248,6 +3248,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Penta Puzzle
       objectReference: {fileID: 0}
+    - target: {fileID: 5900079000988795655, guid: 6065421dd2f537e418716674ffedda99, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

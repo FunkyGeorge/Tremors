@@ -82,6 +82,8 @@ public class GameManager : NetworkBehaviour
         if (NetworkManager.Singleton) {
             NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
         }
+
+        trackedNOs?.Dispose();
     }
 
     private void OnClientConnected(ulong clientId) {

@@ -14,7 +14,7 @@ public class PentaPuzzle : NetworkBehaviour
     [SerializeField] private Sprite luckySprite;
     [SerializeField] private List<PuzzleNode> nodes = new List<PuzzleNode>();
     private PuzzleState state = PuzzleState.Waiting;
-    public NetworkVariable<int> serial = new NetworkVariable<int>(-1);
+    private NetworkVariable<int> serial = new NetworkVariable<int>(-1);
 
     public override void OnNetworkSpawn()
     {
