@@ -17,10 +17,12 @@ public class Runner : NetworkBehaviour
     private Vector2 intentDirection = Vector2.zero;
     private const string V_CAM_NAME = "Virtual Camera";
 
+    [Header("Config")]
     [SerializeField] private GameObject keyPrefab;
     [SerializeField] private GameObject abilityUIPrefab;
     [SerializeField] private GameObject objectiveUIPrefab;
     [SerializeField] private GameObject ghostPrefab;
+    [SerializeField] private LayerMask layerMask;
 
     [Header("Movement")]
     [SerializeField] private float mSpeed = 100;
@@ -43,7 +45,8 @@ public class Runner : NetworkBehaviour
 
     enum MoveState {
         Normal,
-        Dodging
+        Dodging,
+        Trapped
     }
 
     private MoveState currentState = MoveState.Normal;
@@ -61,6 +64,8 @@ public class Runner : NetworkBehaviour
             GameObject vCam = GameObject.Find(V_CAM_NAME);
             CinemachineVirtualCamera vCamComponent = vCam.GetComponent<CinemachineVirtualCamera>();
             vCamComponent.Follow = transform;
+            GameObject mainCamera = GameObject.Find("Main Camera");
+            mainCamera.GetComponent<Camera>().cullingMask = layerMask;
 
             // Create ability UI Widget
             UIManager.Instance.SetAbilityWidget(abilityUIPrefab);
@@ -125,6 +130,10 @@ public class Runner : NetworkBehaviour
             case MoveState.Dodging:
                 DodgeMove(intentDirection);
                 break;
+            case MoveState.Trapped:
+                intentDirection = Vector2.zero;
+                rb.velocity = Vector2.zero;
+                break;
         }
 
         bool shouldBeTrackable = intentDirection != Vector2.zero && !onHighGround;
@@ -167,7 +176,9 @@ public class Runner : NetworkBehaviour
 
     private void DropLure() {
         if (skillCooldownTimer <= 0) {
-            SpawnLureServerRPC();
+            if (IsOwner) {
+                SpawnLureServerRPC();
+            }
             skillCooldownTimer = skillCooldown;
         }
     }
@@ -181,6 +192,15 @@ public class Runner : NetworkBehaviour
 
     public void CollectKey() {
         CollectKeyClientRPC();
+    }
+
+    public void ApplyTrap(Vector2 trap) {
+        transform.SetPositionAndRotation(trap, Quaternion.identity);
+        currentState = MoveState.Trapped;
+    }
+
+    public void Untrap() {
+        currentState = MoveState.Normal;
     }
 
     public void Eliminate() {

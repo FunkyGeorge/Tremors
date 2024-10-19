@@ -10,15 +10,16 @@ public class Tremor : NetworkBehaviour
     private Vector2 intentDirection = Vector2.zero;
     private const string V_CAM_NAME = "Virtual Camera";
 
+    [Header("Config")]
     [SerializeField] private GameObject abilityUIPrefab;
     [SerializeField] private GameObject objectiveUIPrefab;
+    [SerializeField] private LayerMask layerMask;
 
     [Header("Ability")]
-    [SerializeField] private float scanCooldown = 10f;
-    [SerializeField] private float scanDuration = 5f;
+    [SerializeField] private float skillCooldown = 10f;
+    [SerializeField] private GameObject trapPrefab;
     [SerializeField] private float chargeCooldown = 3f;
-    private float scanCooldownTimer = 0;
-    private float scanTimer = 0;
+    private float skillCooldownTimer = 0;
     private float chargeCooldownTimer = 0;
 
     [Header("Movement")]
@@ -54,6 +55,8 @@ public class Tremor : NetworkBehaviour
             CinemachineVirtualCamera vCamComponent = vCam.GetComponent<CinemachineVirtualCamera>();
             vCamComponent.Follow = transform;
             vCamComponent.m_Lens.OrthographicSize = 7.5f;
+            GameObject mainCamera = GameObject.Find("Main Camera");
+            mainCamera.GetComponent<Camera>().cullingMask = layerMask;
 
 
             // Create ability UI Widget
@@ -132,9 +135,9 @@ public class Tremor : NetworkBehaviour
     }
 
     private void CheckCooldowns() {
-        if (scanCooldownTimer > 0) {
-            scanCooldownTimer -= Time.deltaTime;
-            UIManager.Instance.RefreshUniqueOnWidget(scanCooldownTimer/scanCooldown);
+        if (skillCooldownTimer > 0) {
+            skillCooldownTimer -= Time.deltaTime;
+            UIManager.Instance.RefreshUniqueOnWidget(skillCooldownTimer/skillCooldown);
         }
     }
 
@@ -185,7 +188,22 @@ public class Tremor : NetworkBehaviour
         UIManager.Instance.RefreshRadar(transform.position, filteredPositions, 50f);
     }
 
-    public void SetLure(Vector2 lure) {
+    private void DropTrap() {
+        if (skillCooldownTimer <= 0) {
+            skillCooldownTimer = skillCooldown;
+            if (IsOwner) {
+                SpawnTrapServerRPC();
+            }
+        }
+    }
+
+    [ServerRpc]
+    private void SpawnTrapServerRPC() {
+        GameObject trapObject = Instantiate(trapPrefab, transform.position, Quaternion.identity);
+        trapObject.GetComponent<NetworkObject>().Spawn();
+    }
+
+    public void ApplyLure(Vector2 lure) {
         currentState = MoveState.Lured;
         lureTarget = lure;
     }
@@ -249,11 +267,7 @@ public class Tremor : NetworkBehaviour
     public void OnSkill(InputAction.CallbackContext context) {
         if (!IsOwner) { return; }
         if (context.performed) {
-            // Deprecated, moving scan to always be on and add a new ability here
-            // if (scanCooldownTimer <= 0) {
-            //     scanCooldownTimer = scanCooldown;
-            //     StartRunnerScan();
-            // }
+            DropTrap();
         }
 
         if (context.started) {
