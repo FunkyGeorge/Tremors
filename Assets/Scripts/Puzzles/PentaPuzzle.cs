@@ -5,11 +5,6 @@ using UnityEngine;
 public class PentaPuzzle : NetworkBehaviour
 {
 
-    enum PuzzleState {
-        Waiting,
-        Solving,
-        Solved
-    }
     [SerializeField] private Sprite unluckySprite;
     [SerializeField] private Sprite luckySprite;
     [SerializeField] private List<PuzzleNode> nodes = new List<PuzzleNode>();
