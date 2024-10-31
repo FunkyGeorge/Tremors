@@ -21,7 +21,7 @@ public class GameManager : NetworkBehaviour
     [Header("Puzzle Management")]
     [SerializeField] private GameObject keyJar;
     public NetworkVariable<int> winningPuzzleSerial = new NetworkVariable<int>(-1);
-    private List<PentaPuzzle> activePuzzles = new List<PentaPuzzle>();
+    public List<Puzzle> activePuzzles = new List<Puzzle>();
 
     [Header("Config")]
     [SerializeField] private float gameTimeLimit = 5 * 60;
@@ -234,7 +234,7 @@ public class GameManager : NetworkBehaviour
     [ClientRpc]
     private void RegisterPuzzleClientRPC(NetworkObjectReference puzzleRef) {
         if (puzzleRef.TryGet(out NetworkObject puzzle)) {
-            activePuzzles.Add(puzzle.gameObject.GetComponent<PentaPuzzle>());
+            activePuzzles.Add(puzzle.gameObject.GetComponent<Puzzle>());
         } else {
             Debug.Log("Could not get puzzle");
         }
@@ -253,7 +253,7 @@ public class GameManager : NetworkBehaviour
 
     [ClientRpc]
     private void SetGamePuzzlesToCompleteClientRPC() {
-        foreach (PentaPuzzle puzzle in activePuzzles) {
+        foreach (Puzzle puzzle in activePuzzles) {
             puzzle.SetComplete();
         }
         Destroy(keyJar);

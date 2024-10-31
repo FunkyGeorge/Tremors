@@ -2,33 +2,14 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class PentaPuzzle : NetworkBehaviour
+public class PentaPuzzle : Puzzle
 {
-
-    [SerializeField] private Sprite unluckySprite;
-    [SerializeField] private Sprite luckySprite;
+    [Header("Penta Puzzle Config")]
     [SerializeField] private List<PuzzleNode> nodes = new List<PuzzleNode>();
-    private PuzzleState state = PuzzleState.Waiting;
-    private NetworkVariable<int> serial = new NetworkVariable<int>(-1);
 
-    public override void OnNetworkSpawn()
-    {
-        if (IsServer) {
-            InitializePuzzle();
-            NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
-            serial.Value = GameManager.Instance.RegisterPuzzle(gameObject);
-        }
-    }
-
-    void OnClientConnected(ulong clientId) {
+    protected override void OnClientConnected(ulong clientId) {
         for (int i = 0; i < nodes.Count; i++) {
             SyncNodeClientRPC(i, nodes[i].active);
-        }
-    }
-
-    public override void OnDestroy() {
-        if (IsServer && NetworkManager.Singleton) {
-            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
         }
     }
 
@@ -52,7 +33,7 @@ public class PentaPuzzle : NetworkBehaviour
         }
     }
 
-    private void InitializePuzzle() {
+    protected override void InitializePuzzle() {
         // Randomize starting state
         int randomStart = Random.Range(0, nodes.Count);
         for (int i = 0 + randomStart; i < nodes.Count + randomStart; i++) {
@@ -98,23 +79,18 @@ public class PentaPuzzle : NetworkBehaviour
         }
     }
 
-    private void SetSolved() {
-        state = PuzzleState.Solved;
+    protected override void SetSolved() {
         for (int i = 0; i < nodes.Count; i++) {
             nodes[i].gameObject.SetActive(false);
         }
-        GetComponent<SpriteRenderer>().sprite = unluckySprite;
-        if (IsServer) {
-            GameManager.Instance.CheckCompletePuzzle(serial.Value);
-        }
+        base.SetSolved();
     }
 
     // Called by GameManager when all the puzzles should be solved
-    public void SetComplete() {
-        state = PuzzleState.Solved;
+    public override void SetComplete() {
         for (int i = 0; i < nodes.Count; i++) {
             nodes[i].gameObject.SetActive(false);
         }
-        GetComponent<SpriteRenderer>().sprite = luckySprite;
+        base.SetComplete();
     }
 }

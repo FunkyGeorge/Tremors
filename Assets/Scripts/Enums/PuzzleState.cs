@@ -1,4 +1,4 @@
-enum PuzzleState {
+public enum PuzzleState {
     Waiting,
     Solving,
     Solved

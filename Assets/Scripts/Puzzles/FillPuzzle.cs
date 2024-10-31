@@ -1,34 +1,48 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 
-public class FillPuzzle : MonoBehaviour
+public class FillPuzzle : Puzzle
 {
+    [Header("Fill Puzzle Config")]
     [SerializeField] private Transform fillBar;
     [SerializeField] private Transform wholeFillMeter;
-    [SerializeField] private Sprite unluckySprite;
-    [SerializeField] private Sprite luckySprite;
     [SerializeField] private float timeToFill = 5f;
 
-    private int playersStanding = 0;
-    private float fullHeight;
+    private NetworkVariable<int> playersStanding = new NetworkVariable<int>(0);
+    private float fullHeight = 0;
     private float currentTime = 0;
+    public NetworkVariable<float> fillHeight = new NetworkVariable<float>(0);
 
-    private PuzzleState state = PuzzleState.Waiting;
+    protected override void InitializePuzzle() {
+        
+    }
 
     void Start() {
         fullHeight = fillBar.localScale.y;
-        fillBar.localScale = new Vector3(fillBar.localScale.x, 0, fillBar.localScale.z);
+        fillBar.localScale = new Vector3(fillBar.localScale.x, fillHeight.Value, fillBar.localScale.z);
     }
     
     void Update() {
-        if (state != PuzzleState.Solved && playersStanding > 0) {
-            currentTime += Time.deltaTime;
+        SyncFillbar();
+        if (!IsServer) { return; }
+        if (state != PuzzleState.Solved && playersStanding.Value > 0) {
+            IncreaseCurrentTimeServerRPC();
+        }
+    }
+
+    [ServerRpc]
+    private void IncreaseCurrentTimeServerRPC() {
+        currentTime += Time.deltaTime;
+        fillHeight.Value = currentTime / timeToFill * fullHeight;
+    }
+
+    private void SyncFillbar() {
+        if (state != PuzzleState.Solved && playersStanding.Value > 0) {
+            fillBar.localScale = new Vector3(fillBar.localScale.x, fillHeight.Value, fillBar.localScale.z);
             wholeFillMeter.gameObject.SetActive(true);
-
-            // Set fillbar
-            fillBar.localScale = new Vector3(fillBar.localScale.x, currentTime / timeToFill * fullHeight, fillBar.localScale.z);
-
             if (currentTime >= timeToFill) {
                 SetSolved();
             }
@@ -38,24 +52,18 @@ public class FillPuzzle : MonoBehaviour
     }
 
     void OnTriggerEnter2D(Collider2D collider) {
+        if (!IsServer) { return; }
         Runner validRunner = collider.gameObject.GetComponent<Runner>();
         if (validRunner) {
-            playersStanding++;
+            playersStanding.Value++;
         }
     }
 
     void OnTriggerExit2D(Collider2D collider) {
+        if (!IsServer) { return; }
         Runner validRunner = collider.gameObject.GetComponent<Runner>();
         if (validRunner) {
-            playersStanding--;
+            playersStanding.Value--;
         }
-    }
-
-    private void SetSolved() {
-        state = PuzzleState.Solved;
-        GetComponent<SpriteRenderer>().sprite = unluckySprite;
-        // if (IsServer) {
-        //     GameManager.Instance.CheckCompletePuzzle(serial.Value);
-        // }
     }
 }
