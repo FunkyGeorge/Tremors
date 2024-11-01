@@ -11,6 +11,7 @@ public class PentaPuzzle : Puzzle
         for (int i = 0; i < nodes.Count; i++) {
             SyncNodeClientRPC(i, nodes[i].active);
         }
+        base.OnClientConnected(clientId);
     }
 
     // Start is called before the first frame update

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using Unity.Services.Lobbies.Models;
 
 public abstract class Puzzle : NetworkBehaviour
 {
@@ -27,7 +28,14 @@ public abstract class Puzzle : NetworkBehaviour
 
     protected abstract void InitializePuzzle();
 
-    protected virtual void OnClientConnected(ulong clientId) { }
+    protected virtual void OnClientConnected(ulong clientId) {
+        if (IsServer) {
+            Lobby joinedLobby = LobbyManager.Instance.GetJoinedLobby();
+            if (NetworkManager.Singleton.ConnectedClientsIds.Count == joinedLobby.Players.Count) {
+                serial.Value = GameManager.Instance.RegisterPuzzle(gameObject);
+            }
+        }
+    }
 
     protected virtual void SetSolved() {
         state = PuzzleState.Solved;

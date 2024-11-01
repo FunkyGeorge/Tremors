@@ -37,18 +37,24 @@ public class FillPuzzle : Puzzle
     private void IncreaseCurrentTimeServerRPC() {
         currentTime += Time.deltaTime;
         fillHeight.Value = currentTime / timeToFill * fullHeight;
+
+        if (currentTime >= timeToFill) {
+            SetSolvedClientRPC();        
+        }
     }
 
     private void SyncFillbar() {
         if (state != PuzzleState.Solved && playersStanding.Value > 0) {
             fillBar.localScale = new Vector3(fillBar.localScale.x, fillHeight.Value, fillBar.localScale.z);
             wholeFillMeter.gameObject.SetActive(true);
-            if (currentTime >= timeToFill) {
-                SetSolved();
-            }
         } else {
             wholeFillMeter.gameObject.SetActive(false);
         }
+    }
+
+    [ClientRpc]
+    private void SetSolvedClientRPC() {
+        SetSolved();
     }
 
     void OnTriggerEnter2D(Collider2D collider) {
