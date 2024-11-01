@@ -197,12 +197,14 @@ public class GameManager : NetworkBehaviour
     }
 
     private void CalculateRunnerPositions() {
-        runnerPositions.Clear();
-        foreach(NetworkObjectReference NORef in trackedNOs) {
-            if (NORef.TryGet(out NetworkObject trackedNO)) {
-                runnerPositions.Add(trackedNO.transform.position);
-            } else {
-                Debug.Log("Tracked Object not found");
+        if (IsSpawned) {
+            runnerPositions.Clear();
+            foreach(NetworkObjectReference NORef in trackedNOs) {
+                if (NORef.TryGet(out NetworkObject trackedNO)) {
+                    runnerPositions.Add(trackedNO.transform.position);
+                } else {
+                    Debug.Log("Tracked Object not found");
+                }
             }
         }
     }
