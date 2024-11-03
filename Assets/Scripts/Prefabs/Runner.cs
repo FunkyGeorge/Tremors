@@ -76,6 +76,7 @@ public class Runner : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!GameManager.Instance.isGameActive) { return; }
         sr.flipX = isFlipped.Value;
 
         if (!IsOwner) { return; }

@@ -12,7 +12,9 @@ using Unity.Networking.Transport.Relay;
 
 public class GameManager : NetworkBehaviour
 {
+    public bool isGameActive = false;
     public event EventHandler<int> OnSurvivorsUpdated;
+    [SerializeField] private AlertBox alertBox;
     private List<Transform> tremors = new List<Transform>();
     private NetworkList<NetworkObjectReference> trackedNOs;
     private List<Vector2> runnerPositions = new List<Vector2>();
@@ -28,7 +30,6 @@ public class GameManager : NetworkBehaviour
     private float gameTimeRemaining = -1f;
     
     private string gameCodeString = "";
-    private bool isGameActive = false;
 
     private static GameManager _instance;
     public static GameManager Instance
@@ -90,11 +91,16 @@ public class GameManager : NetworkBehaviour
         Lobby joinedLobby = LobbyManager.Instance.GetJoinedLobby();
         if (NetworkManager.Singleton.ConnectedClientsIds.Count == joinedLobby.Players.Count) {
             if (IsServer) {
-                RollNewWinningSNServerRPC();
+                GameStartServerRPC();
             }
-            InitializeGameTimeClientRPC(gameTimeLimit);
             NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
         }
+    }
+
+    [ServerRpc]
+    void GameStartServerRPC() {
+        winningPuzzleSerial.Value = UnityEngine.Random.Range(0, activePuzzles.Count);
+        InitializeGameTimeClientRPC(gameTimeLimit);
     }
 
     async void StartRelayHost() {
@@ -141,6 +147,7 @@ public class GameManager : NetworkBehaviour
 
     [ClientRpc]
     void InitializeGameTimeClientRPC(float gameTime) {
+        alertBox.AddAlert("Start!");
         gameTimeRemaining = gameTime;
         isGameActive = true;
     }
@@ -242,11 +249,6 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    [ServerRpc]
-    private void RollNewWinningSNServerRPC() {
-        winningPuzzleSerial.Value = UnityEngine.Random.Range(0, activePuzzles.Count);
-    }
-
     public void CheckCompletePuzzle(int serial) {
         if (serial == winningPuzzleSerial.Value) {
             SetGamePuzzlesToCompleteClientRPC();
@@ -255,6 +257,7 @@ public class GameManager : NetworkBehaviour
 
     [ClientRpc]
     private void SetGamePuzzlesToCompleteClientRPC() {
+        alertBox.AddAlert("Key is now available");
         foreach (Puzzle puzzle in activePuzzles) {
             puzzle.SetComplete();
         }

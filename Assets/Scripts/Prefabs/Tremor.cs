@@ -68,6 +68,7 @@ public class Tremor : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!GameManager.Instance.isGameActive) { return; }
         if (IsOwner) {
             CheckMovement();
             CheckSlitherVolume();
