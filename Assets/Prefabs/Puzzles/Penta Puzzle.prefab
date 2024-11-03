@@ -75,7 +75,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 4
   m_Sprite: {fileID: -1828325086, guid: 803435177b0a88141b6b12ad3ff24852, type: 3}
   m_Color: {r: 0.68235296, g: 1, b: 0.49411762, a: 1}
   m_FlipX: 0
@@ -233,7 +233,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 4
   m_Sprite: {fileID: -1828325086, guid: 803435177b0a88141b6b12ad3ff24852, type: 3}
   m_Color: {r: 0.68235296, g: 1, b: 0.49411762, a: 1}
   m_FlipX: 0
@@ -391,7 +391,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 4
   m_Sprite: {fileID: -1828325086, guid: 803435177b0a88141b6b12ad3ff24852, type: 3}
   m_Color: {r: 0.68235296, g: 1, b: 0.49411762, a: 1}
   m_FlipX: 0
@@ -512,7 +512,7 @@ Transform:
   - {fileID: 8901521123634132947}
   - {fileID: 225350174598639533}
   m_Father: {fileID: 0}
-  m_RootOrder: 14
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1009265819013509210
 SpriteRenderer:
@@ -554,7 +554,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 3
   m_Sprite: {fileID: -1128751782, guid: 54c7848fb8e63634491c47e20a96c983, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -621,7 +621,6 @@ MonoBehaviour:
   - {fileID: 1968803212464016384}
   - {fileID: 8988051294906069241}
   - {fileID: 2262844640337299321}
-  serial: -1
 --- !u!114 &665905406318467785
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -716,7 +715,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 4
   m_Sprite: {fileID: -1828325086, guid: 803435177b0a88141b6b12ad3ff24852, type: 3}
   m_Color: {r: 0.68235296, g: 1, b: 0.49411762, a: 1}
   m_FlipX: 0
@@ -874,7 +873,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 4
   m_Sprite: {fileID: -1828325086, guid: 803435177b0a88141b6b12ad3ff24852, type: 3}
   m_Color: {r: 0.68235296, g: 1, b: 0.49411762, a: 1}
   m_FlipX: 0
