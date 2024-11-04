@@ -16,7 +16,6 @@ public abstract class Puzzle : NetworkBehaviour
         if (IsServer) {
             InitializePuzzle();
             NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
-            serial.Value = GameManager.Instance.RegisterPuzzle(gameObject);
         }
     }
 

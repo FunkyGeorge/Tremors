@@ -24,6 +24,7 @@ public class GameManager : NetworkBehaviour
     [SerializeField] private GameObject keyJar;
     public NetworkVariable<int> winningPuzzleSerial = new NetworkVariable<int>(-1);
     public List<Puzzle> activePuzzles = new List<Puzzle>();
+    private int serialIndex = 0;
 
     [Header("Config")]
     [SerializeField] private float gameTimeLimit = 5 * 60;
@@ -99,7 +100,6 @@ public class GameManager : NetworkBehaviour
 
     [ServerRpc]
     void GameStartServerRPC() {
-        winningPuzzleSerial.Value = UnityEngine.Random.Range(0, activePuzzles.Count);
         InitializeGameTimeClientRPC(gameTimeLimit);
     }
 
@@ -235,9 +235,9 @@ public class GameManager : NetworkBehaviour
     }
 
     public int RegisterPuzzle(NetworkObjectReference puzzleRef) {
-        int serial = activePuzzles.Count;
+        winningPuzzleSerial.Value = UnityEngine.Random.Range(0, activePuzzles.Count);
         RegisterPuzzleClientRPC(puzzleRef);
-        return serial;
+        return serialIndex++;
     }
 
     [ClientRpc]
